@@ -5,6 +5,7 @@ import {
     Job,
     NotificationPayloadJobCompletedData,
     JobCreateParams,
+    FfmpegJpg,
 } from 'chunkify';
 import { client } from '../../client';
 
@@ -24,8 +25,17 @@ export async function POST(req: NextRequest) {
                     // Creating jobs from the source
                     console.log('Creating jobs from the source:', upload.id);
                     try {
-                        await createJob(upload.source_id, 'video');
-                        await createJob(upload.source_id, 'image');
+                        const jobVideo = await createJob(
+                            upload.source_id,
+                            'video'
+                        );
+                        jobsStore[jobVideo.id] = { job: jobVideo, files: [] };
+                        const jobImage = await createJob(
+                            upload.source_id,
+                            'image'
+                        );
+                        jobsStore[jobImage.id] = { job: jobImage, files: [] };
+                        console.log('Created jobs:', jobVideo, jobImage);
                     } catch (error) {
                         console.error('Error creating jobs:', error);
                     }
@@ -69,11 +79,17 @@ export async function POST(req: NextRequest) {
 }
 
 async function createJob(sourceId: string, format: 'video' | 'image') {
+    let conf = {};
+    if (format === 'image') {
+        conf = {
+            interval: 60,
+        };
+    }
     const params: JobCreateParams = {
         source_id: sourceId,
         format: {
             name: format === 'video' ? 'mp4/x264' : 'jpg',
-            config: {},
+            config: conf,
         },
     };
 

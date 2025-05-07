@@ -63,13 +63,13 @@ export default function JobsList() {
                 </div>
             ) : (
                 <>
-                    <h2 className="text-xl font-bold mb-4">Jobs</h2>
+                    <h2 className="text-xl font-bold mb-4">Transcoding jobs</h2>
                     <div className="overflow-x-auto w-full">
                         <table className="min-w-full border border-gray-200 bg-white">
                             <thead>
                                 <tr className="bg-gray-100">
                                     <th className="px-4 py-2 text-left border-b">
-                                        job ID
+                                        Format
                                     </th>
                                     <th className="px-4 py-2 text-left border-b">
                                         status
@@ -84,7 +84,7 @@ export default function JobsList() {
                                         className="border-b"
                                     >
                                         <td className="px-4 py-2">
-                                            {job.job.id}
+                                            {job.job.format.name}
                                         </td>
                                         <td className="px-4 py-2">
                                             {job.job.status}

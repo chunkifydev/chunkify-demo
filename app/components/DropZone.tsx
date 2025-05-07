@@ -1,6 +1,6 @@
 'use client';
 import { useDropzone } from 'react-dropzone';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Upload } from 'chunkify';
 
 export default function DropZone({
@@ -12,11 +12,36 @@ export default function DropZone({
     const [uploading, setUploading] = useState(false);
     const [uploadedId, setUploadedId] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [isConfirmed, setIsConfirmed] = useState(false);
 
     //For metadata
     const [name, setName] = useState('');
 
+    // Check if upload is confirmed
+    useEffect(() => {
+        if (uploadedId) {
+            const checkUpload = async () => {
+                try {
+                    const res = await fetch('/api/uploads');
+                    const data = await res.json();
+                    const uploads = data.uploads as Upload[];
+                    // If we find our uploadId in the store, it means it's confirmed
+                    if (uploads.some((upload) => upload.id === uploadedId)) {
+                        setIsConfirmed(true);
+                    }
+                } catch (e) {
+                    console.error('Error checking upload:', e);
+                }
+            };
+
+            const interval = setInterval(checkUpload, 2000);
+            return () => clearInterval(interval);
+        }
+    }, [uploadedId]);
+
     const onDrop = async (acceptedFiles: File[]) => {
+        setUploadedId(null);
+        setIsConfirmed(false);
         setUploading(true);
         setError(null);
         try {
@@ -67,7 +92,7 @@ export default function DropZone({
     });
 
     return (
-        <div>
+        <div className="flex flex-col gap-4">
             <div
                 {...getRootProps()}
                 className="border-2 border-dashed p-6 rounded-lg text-center cursor-pointer"
@@ -87,20 +112,25 @@ export default function DropZone({
                 )}
                 {error && <p className="text-red-500">{error}</p>}
                 {uploadedId && (
-                    <p className="text-green-500">Upload entry created!</p>
+                    <p className="text-green-500">Upload completed!</p>
                 )}
             </div>
-            <div className="mb-4 flex flex-col gap-2 mt-4">
-                <label>
-                    Name:
-                    <input
-                        className="w-32 p-2 border rounded mt-1"
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder="Enter a name"
-                    />
-                </label>
+            <div>
+                {uploadedId && !isConfirmed && (
+                    <p>
+                        <span className="animate-pulse">
+                            Waiting for the confirmation from the server...
+                        </span>
+                    </p>
+                )}
+                {isConfirmed && (
+                    <p>
+                        <span className="animate-pulse">
+                            Upload confirmed, source created, starting the
+                            transcoding now
+                        </span>
+                    </p>
+                )}
             </div>
         </div>
     );

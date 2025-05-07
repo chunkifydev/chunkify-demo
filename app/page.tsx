@@ -1,6 +1,5 @@
 import Image from 'next/image';
 import FileUpload from './components/FileUpload';
-import UploadsList from './components/UploadsList';
 import JobsList from './components/JobsList';
 export default function Home() {
     return (
@@ -14,7 +13,6 @@ export default function Home() {
                     className="mb-8 mx-auto"
                 />
                 <FileUpload />
-                <UploadsList />
                 <JobsList />
             </main>
             <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
