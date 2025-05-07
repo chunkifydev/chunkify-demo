@@ -1,7 +1,11 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
+import { join } from 'path';
 
-const nextConfig: NextConfig = {
-  /* config options here */
-};
+const nextConfig = {
+    reactStrictMode: true,
+    experimental: {
+        outputFileTracingRoot: join(__dirname, '..'),
+    },
+} as NextConfig;
 
 export default nextConfig;
