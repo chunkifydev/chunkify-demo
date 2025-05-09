@@ -37,15 +37,9 @@ export async function POST(req: NextRequest) {
                     // Creating jobs from the source
                     console.log('Creating jobs from the source:', upload.id);
                     try {
-                        const jobVideo = await createJob(
-                            upload.source_id,
-                            'video'
-                        );
+                        const jobVideo = await createJob(upload, 'video');
                         addJobToStore(jobVideo);
-                        const jobImage = await createJob(
-                            upload.source_id,
-                            'image'
-                        );
+                        const jobImage = await createJob(upload, 'image');
                         addJobToStore(jobImage);
                         console.log('Created jobs:', jobVideo, jobImage);
                     } catch (error) {
@@ -100,7 +94,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true });
 }
 
-async function createJob(sourceId: string, format: 'video' | 'image') {
+async function createJob(upload: Upload, format: 'video' | 'image') {
     let conf = {};
     if (format === 'image') {
         conf = {
@@ -108,11 +102,12 @@ async function createJob(sourceId: string, format: 'video' | 'image') {
         };
     }
     const params: JobCreateParams = {
-        source_id: sourceId,
+        source_id: upload.source_id,
         format: {
             name: format === 'video' ? 'mp4/x264' : 'jpg',
             config: conf,
         },
+        ...(upload.metadata && { metadata: upload.metadata }),
     };
 
     const job = await client.job.create(params);

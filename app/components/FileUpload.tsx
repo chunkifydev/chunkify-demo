@@ -102,7 +102,14 @@ export default function FileUpload({
                 {error && <p className="text-red-500">{error}</p>}
                 {uploadedId && <p className="text-green-500">Upload sent!</p>}
             </div>
-            <div></div>
+            <div>
+                <input
+                    type="text"
+                    placeholder="Enter video name"
+                    className="px-3 py-2 border rounded-md"
+                    onChange={(e) => setName(e.target.value)}
+                />
+            </div>
         </div>
     );
 }

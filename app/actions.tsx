@@ -3,10 +3,10 @@
 import { client } from './client';
 import { UploadCreateParamsMetadata, JobCreateParams } from 'chunkify';
 
-export async function createUpload(name: string) {
-    const metadataToUpload: UploadCreateParamsMetadata = {
-        name: name,
+export async function createUpload(title: string) {
+    const metadata: UploadCreateParamsMetadata = {
+        title: title,
     };
 
-    return await client.upload.create({ metadata: metadataToUpload });
+    return await client.upload.create({ metadata: metadata });
 }
