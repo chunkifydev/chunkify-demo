@@ -2,11 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import {
     getUploadStore,
     getJobStore,
-    setUploadStore,
     addJobToStore,
-    resetStore,
-    updateJobStore,
+    updateUploadStore,
     JobWithFiles,
+    updateJobStore,
 } from '../store';
 import {
     Upload,
@@ -30,29 +29,38 @@ export async function POST(req: NextRequest) {
             const upload = body.data?.upload as Upload | undefined;
             console.log('Upload notification:', upload);
             console.log('Upload store:', uploadStore);
-            if (upload && upload?.id === uploadStore[0]?.id) {
-                setUploadStore(upload);
-                console.log('Stored upload:', upload.id);
-                if (upload.source_id) {
-                    // Creating jobs from the source
-                    console.log('Creating jobs from the source:', upload.id);
-                    try {
-                        const jobVideo = await createJob(upload, 'video');
-                        addJobToStore(jobVideo);
-                        const jobImage = await createJob(upload, 'image');
-                        addJobToStore(jobImage);
-                        console.log('Created jobs:', jobVideo, jobImage);
-                    } catch (error) {
-                        console.error('Error creating jobs:', error);
+            if (upload) {
+                if (await updateUploadStore(upload)) {
+                    console.log('Upload found in the store:', upload.id);
+                    if (upload.source_id) {
+                        // Creating jobs from the source
+                        console.log(
+                            'Creating jobs from the source:',
+                            upload.id
+                        );
+                        try {
+                            const jobVideo = await createJob(upload, 'video');
+                            await updateJobStore(
+                                jobVideo,
+                                jobVideo.metadata?.demo_id
+                            );
+                            const jobImage = await createJob(upload, 'image');
+                            await addJobToStore(jobImage);
+                            console.log('Created jobs:', jobVideo, jobImage);
+                        } catch (error) {
+                            console.error('Error creating jobs:', error);
+                        }
+                    } else {
+                        console.log(
+                            'No source_id found for upload:',
+                            upload.id
+                        );
+                        throw new Error(
+                            'Cannot create job.No source_id found for this upload'
+                        );
                     }
-                } else {
-                    console.log('No source_id found for upload:', upload.id);
-                    throw new Error(
-                        'Cannot create job.No source_id found for this upload'
-                    );
                 }
             }
-
             break;
         }
         case 'job.completed': {
@@ -65,10 +73,14 @@ export async function POST(req: NextRequest) {
                     files: payload.files,
                 };
 
-                updateJobStore(jobWithFiles);
-                console.log('completed job:', payload);
-                console.log('Stored job:', payload.job.id);
-                console.log('Job Store:', jobStore);
+                await updateJobStore(jobWithFiles);
+                // If image jobs add thumbnail from it to the associated videoJob
+                if (jobWithFiles.format.name === 'jpg') {
+                    console.log(
+                        'Image job completed, adding thumbnail to video job'
+                    );
+                    await addThumbnailFrom(jobWithFiles, jobStore);
+                }
             }
             break;
         }
@@ -80,9 +92,7 @@ export async function POST(req: NextRequest) {
                     ...payload.job,
                     files: payload.files,
                 };
-                updateJobStore(jobWithFiles);
-                console.log('failed job:', payload);
-                console.log('Stored job:', payload.job.id);
+                await updateJobStore(jobWithFiles);
             }
             break;
         }
@@ -117,4 +127,22 @@ async function createJob(upload: Upload, format: 'video' | 'image') {
     };
 
     return jobWithFiles;
+}
+
+async function addThumbnailFrom(
+    jobCompleted: JobWithFiles,
+    jobStore: JobWithFiles[]
+) {
+    const job = jobStore.find(
+        (job) =>
+            job.metadata?.demo_id === jobCompleted.metadata?.demo_id &&
+            job.format.name !== 'jpg'
+    );
+    if (job && jobCompleted.files.length > 0) {
+        console.log('Video job found, adding thumbnail from image job');
+        // Take a thunmbnail that is middle of the video roughly
+        const thumbnailIndex = Math.floor(jobCompleted.files.length / 2);
+        job.thumbnail = jobCompleted.files[thumbnailIndex].url;
+        await updateJobStore(job);
+    }
 }

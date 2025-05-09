@@ -2,39 +2,43 @@
 import { useDropzone } from 'react-dropzone';
 import { useState, useEffect } from 'react';
 import { Upload } from 'chunkify';
+import { addJobToStore, newStoreJob, addToUploadStore } from '@/app/api/store';
+import { createUpload } from '@/app/actions';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Progress } from '@/components/ui/progress';
 
-interface Props {
-    createUpload: (name: string) => Promise<Upload>;
-    uploadedId: string | null;
-    setUploadedId: (id: string) => void;
-    setUploadStore: (upload: Upload) => Promise<void>;
-    reset: () => Promise<void>;
-}
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
 
-export default function FileUpload({
-    createUpload,
-    uploadedId,
-    setUploadedId,
-    setUploadStore,
-    reset,
-}: Props) {
+export default function FileUpload() {
     const [progress, setProgress] = useState(0);
-    const [uploading, setUploading] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
+    const [isUploaded, setIsUploaded] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     //For metadata
-    const [name, setName] = useState('');
+    const [title, setTitle] = useState('');
 
     const onDrop = async (acceptedFiles: File[]) => {
-        await reset();
-        setUploading(true);
+        setIsUploaded(false);
+        setProgress(0);
+        setIsUploading(true);
         setError(null);
         try {
             const file = acceptedFiles[0];
-            // 1. Create upload entry using server function
-            const upload = await createUpload(name);
+            // Create upload entry using server function
+            const upload = await createUpload(title);
 
-            // 2. Upload file to pre-signed URL using XMLHttpRequest for progress
+            // Upload file to pre-signed URL using XMLHttpRequest for progress
             await new Promise((resolve, reject) => {
                 const xhr = new XMLHttpRequest();
 
@@ -64,12 +68,15 @@ export default function FileUpload({
                 xhr.send(file);
             });
 
-            setUploadedId(upload.id);
-            await setUploadStore(upload);
+            await addToUploadStore(upload);
+            const job = await newStoreJob(upload.metadata?.demo_id, title);
+            await addJobToStore(job);
+            setIsUploaded(true);
         } catch (err) {
             setError('Upload failed: ' + err);
         } finally {
-            setUploading(false);
+            setIsUploading(false);
+            setIsUploaded(false);
         }
     };
 
@@ -78,38 +85,60 @@ export default function FileUpload({
     });
 
     return (
-        <div className="flex flex-col gap-4">
-            <div
-                {...getRootProps()}
-                className="border-2 border-dashed p-6 rounded-lg text-center cursor-pointer"
-            >
-                <input {...getInputProps()} />
-                {isDragActive ? (
-                    <p>Drop the files here ...</p>
-                ) : (
-                    <p>
-                        Drag 'n' drop a file here, or click to select a file and
-                        start transcoding
-                    </p>
-                )}
-                {uploading && (
-                    <div className="mt-4">
-                        <p className="text-blue-500">
-                            Uploading: {progress.toFixed(0)}%
-                        </p>
-                    </div>
-                )}
-                {error && <p className="text-red-500">{error}</p>}
-                {uploadedId && <p className="text-green-500">Upload sent!</p>}
-            </div>
-            <div>
-                <input
-                    type="text"
-                    placeholder="Enter video name"
-                    className="px-3 py-2 border rounded-md"
-                    onChange={(e) => setName(e.target.value)}
-                />
-            </div>
-        </div>
+        <Dialog>
+            <DialogTrigger asChild>
+                <Button variant="outline">Upload a video</Button>
+            </DialogTrigger>
+            <DialogContent>
+                <div className="flex flex-col gap-4">
+                    {!isUploading && (
+                        <>
+                            <div className="grid w-1/2 max-w-sm items-center gap-1.5">
+                                <Label htmlFor="title">Video Title</Label>
+                                <Input
+                                    type="title"
+                                    id="title"
+                                    placeholder="Enter video title"
+                                    onChange={(e) => setTitle(e.target.value)}
+                                />
+                            </div>
+                            <div
+                                {...getRootProps()}
+                                className="border-2 border-dashed p-6 rounded-lg text-center cursor-pointer"
+                            >
+                                <input {...getInputProps()} />
+                                {isDragActive ? (
+                                    <p>Drop the files here ...</p>
+                                ) : (
+                                    <p>
+                                        Select a video file to start transcoding
+                                    </p>
+                                )}
+                                {error && (
+                                    <p className="text-red-500">{error}</p>
+                                )}
+                            </div>
+                        </>
+                    )}
+                    {isUploading && (
+                        <div className="mt-4 flex flex-col items-center gap-2">
+                            <div className="flex items-center gap-2">
+                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-green-500" />
+                                <p className="text-green-500 font-medium">
+                                    {progress.toFixed(0)}%
+                                </p>
+                            </div>
+                            <Progress
+                                value={progress}
+                                className="w-[70%] [&>div]:bg-green-500"
+                            />
+                        </div>
+                    )}
+                    {isUploaded && (
+                        <p className="text-green-500">Upload done!</p>
+                    )}
+                </div>
+            </DialogContent>
+        </Dialog>
     );
 }

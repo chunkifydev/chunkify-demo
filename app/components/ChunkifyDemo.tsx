@@ -57,13 +57,7 @@ export default function ChunkifyDemo({
 
     return (
         <div className="flex flex-col gap-4">
-            <FileUpload
-                createUpload={createUpload}
-                uploadedId={uploadedId}
-                setUploadedId={setUploadedId}
-                setUploadStore={setUploadStore}
-                reset={handleReset}
-            />
+            <FileUpload />
             <StatusMessages
                 uploadedId={uploadedId}
                 isUploadConfirmed={isUploadConfirmed}

@@ -1,33 +1,31 @@
 import Image from 'next/image';
-import {
-    resetStore,
-    setUploadStore,
-    getJobStore,
-    getUploadStore,
-} from './api/store';
-import { createUpload } from './actions';
-import ChunkifyDemo from './components/ChunkifyDemo';
-
+import { getJobStore } from './api/store';
+import JobsIndex from './components/JobsIndex';
+import FileUpload from './components/FileUpload';
 export default function Home() {
     return (
-        <div className="grid grid-rows-[20px_1fr_20px] items-start justify-items-center min-h-screen p-2 pt-2 pb-10 gap-8 sm:p-8 sm:pt-16 sm:pb-16 font-[family-name:var(--font-geist-sans)]">
-            <main className="flex flex-col gap-2 row-start-2 items-center sm:items-start mt-0 sm:mt-4">
-                <img
-                    src="https://chunkify.s3.us-east-1.amazonaws.com/logos/chunkify.png"
-                    alt="Chunkify Logo"
-                    width={300}
-                    height={100}
-                    className="mb-8 mx-auto"
-                />
-                <ChunkifyDemo
-                    createUpload={createUpload}
-                    resetStore={resetStore}
-                    setUploadStore={setUploadStore}
-                    getJobStore={getJobStore}
-                    getUploadStore={getUploadStore}
-                />
+        <div className="min-h-screen p-8 flex flex-col">
+            <main className="w-full max-w-7xl mx-auto flex-1 flex flex-col">
+                <div className="grid grid-cols-3 items-center mb-8">
+                    <div></div>
+                    <div className="flex justify-center">
+                        <img
+                            src="https://chunkify.s3.us-east-1.amazonaws.com/logos/chunkify.png"
+                            alt="Chunkify Logo"
+                            width={300}
+                            height={100}
+                        />
+                    </div>
+                    <div className="flex justify-end">
+                        <FileUpload />
+                    </div>
+                </div>
+
+                <div className="flex items-center justify-center mt-16">
+                    <JobsIndex getJobStore={getJobStore} />
+                </div>
             </main>
-            <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
+            <footer className="mt-auto flex gap-[24px] flex-wrap items-center justify-center">
                 <a
                     className="flex items-center gap-2 hover:underline hover:underline-offset-4"
                     href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
