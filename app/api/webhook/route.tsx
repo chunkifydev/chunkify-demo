@@ -1,5 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { uploadsStore, jobsStore } from '../store';
+import {
+    getUploadStore,
+    getJobStore,
+    setUploadStore,
+    addJobToStore,
+    resetStore,
+    updateJobStore,
+} from '../store';
 import {
     Upload,
     Job,
@@ -10,6 +17,8 @@ import {
 import { client } from '../../client';
 
 export async function POST(req: NextRequest) {
+    const uploadStore = await getUploadStore();
+    const jobStore = await getJobStore();
     const body = await req.json();
 
     const event = body.event; // e.g., "upload.completed", "job.completed", "job.failed"
@@ -18,8 +27,10 @@ export async function POST(req: NextRequest) {
     switch (event) {
         case 'upload.completed': {
             const upload = body.data?.upload as Upload | undefined;
-            if (upload && upload.id) {
-                uploadsStore[upload.id] = upload;
+            console.log('Upload notification:', upload);
+            console.log('Upload store:', uploadStore);
+            if (upload && upload?.id === uploadStore?.id) {
+                setUploadStore(upload);
                 console.log('Stored upload:', upload.id);
                 if (upload.source_id) {
                     // Creating jobs from the source
@@ -29,12 +40,12 @@ export async function POST(req: NextRequest) {
                             upload.source_id,
                             'video'
                         );
-                        jobsStore[jobVideo.id] = { job: jobVideo, files: [] };
+                        addJobToStore({ job: jobVideo, files: [] });
                         const jobImage = await createJob(
                             upload.source_id,
                             'image'
                         );
-                        jobsStore[jobImage.id] = { job: jobImage, files: [] };
+                        addJobToStore({ job: jobImage, files: [] });
                         console.log('Created jobs:', jobVideo, jobImage);
                     } catch (error) {
                         console.error('Error creating jobs:', error);
@@ -53,10 +64,10 @@ export async function POST(req: NextRequest) {
             const payload = body.data as NotificationPayloadJobCompletedData;
 
             if (payload && payload.job.id) {
-                jobsStore[payload.job.id] = payload;
+                updateJobStore(payload);
                 console.log('completed job:', payload);
                 console.log('Stored job:', payload.job.id);
-                console.log('Job Store:', jobsStore);
+                console.log('Job Store:', jobStore);
             }
             break;
         }
@@ -64,7 +75,7 @@ export async function POST(req: NextRequest) {
             const payload = body.data as NotificationPayloadJobCompletedData;
 
             if (payload && payload.job.id) {
-                jobsStore[payload.job.id] = payload;
+                updateJobStore(payload);
                 console.log('failed job:', payload);
                 console.log('Stored job:', payload.job.id);
             }

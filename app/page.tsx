@@ -1,10 +1,12 @@
 import Image from 'next/image';
-import FileUpload from './components/FileUpload';
-import JobsList from './components/JobsList';
+import { resetStore, setUploadStore, getJobStore } from './api/store';
+import { createUpload } from './actions';
+import ChunkifyDemo from './components/ChunkifyDemo';
+
 export default function Home() {
     return (
-        <div className="grid grid-rows-[20px_1fr_20px] items-start justify-items-center min-h-screen p-2 pt-8 pb-10 gap-8 sm:p-8 sm:pt-16 sm:pb-16 font-[family-name:var(--font-geist-sans)]">
-            <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start mt-0 sm:mt-4">
+        <div className="grid grid-rows-[20px_1fr_20px] items-start justify-items-center min-h-screen p-2 pt-2 pb-10 gap-8 sm:p-8 sm:pt-16 sm:pb-16 font-[family-name:var(--font-geist-sans)]">
+            <main className="flex flex-col gap-2 row-start-2 items-center sm:items-start mt-0 sm:mt-4">
                 <img
                     src="https://chunkify.s3.us-east-1.amazonaws.com/logos/chunkify.png"
                     alt="Chunkify Logo"
@@ -12,8 +14,12 @@ export default function Home() {
                     height={100}
                     className="mb-8 mx-auto"
                 />
-                <FileUpload />
-                <JobsList />
+                <ChunkifyDemo
+                    createUpload={createUpload}
+                    resetStore={resetStore}
+                    setUploadStore={setUploadStore}
+                    getJobStore={getJobStore}
+                />
             </main>
             <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
                 <a
