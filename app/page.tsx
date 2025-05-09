@@ -1,5 +1,10 @@
 import Image from 'next/image';
-import { resetStore, setUploadStore, getJobStore } from './api/store';
+import {
+    resetStore,
+    setUploadStore,
+    getJobStore,
+    getUploadStore,
+} from './api/store';
 import { createUpload } from './actions';
 import ChunkifyDemo from './components/ChunkifyDemo';
 
@@ -19,6 +24,7 @@ export default function Home() {
                     resetStore={resetStore}
                     setUploadStore={setUploadStore}
                     getJobStore={getJobStore}
+                    getUploadStore={getUploadStore}
                 />
             </main>
             <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">

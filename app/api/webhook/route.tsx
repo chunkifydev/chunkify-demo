@@ -6,6 +6,7 @@ import {
     addJobToStore,
     resetStore,
     updateJobStore,
+    JobWithFiles,
 } from '../store';
 import {
     Upload,
@@ -29,7 +30,7 @@ export async function POST(req: NextRequest) {
             const upload = body.data?.upload as Upload | undefined;
             console.log('Upload notification:', upload);
             console.log('Upload store:', uploadStore);
-            if (upload && upload?.id === uploadStore?.id) {
+            if (upload && upload?.id === uploadStore[0]?.id) {
                 setUploadStore(upload);
                 console.log('Stored upload:', upload.id);
                 if (upload.source_id) {
@@ -40,12 +41,12 @@ export async function POST(req: NextRequest) {
                             upload.source_id,
                             'video'
                         );
-                        addJobToStore({ job: jobVideo, files: [] });
+                        addJobToStore(jobVideo);
                         const jobImage = await createJob(
                             upload.source_id,
                             'image'
                         );
-                        addJobToStore({ job: jobImage, files: [] });
+                        addJobToStore(jobImage);
                         console.log('Created jobs:', jobVideo, jobImage);
                     } catch (error) {
                         console.error('Error creating jobs:', error);
@@ -64,7 +65,13 @@ export async function POST(req: NextRequest) {
             const payload = body.data as NotificationPayloadJobCompletedData;
 
             if (payload && payload.job.id) {
-                updateJobStore(payload);
+                // Convert the payload to a JobWithFiles object
+                const jobWithFiles = {
+                    ...payload.job,
+                    files: payload.files,
+                };
+
+                updateJobStore(jobWithFiles);
                 console.log('completed job:', payload);
                 console.log('Stored job:', payload.job.id);
                 console.log('Job Store:', jobStore);
@@ -75,7 +82,11 @@ export async function POST(req: NextRequest) {
             const payload = body.data as NotificationPayloadJobCompletedData;
 
             if (payload && payload.job.id) {
-                updateJobStore(payload);
+                const jobWithFiles = {
+                    ...payload.job,
+                    files: payload.files,
+                };
+                updateJobStore(jobWithFiles);
                 console.log('failed job:', payload);
                 console.log('Stored job:', payload.job.id);
             }
@@ -104,5 +115,11 @@ async function createJob(sourceId: string, format: 'video' | 'image') {
         },
     };
 
-    return await client.job.create(params);
+    const job = await client.job.create(params);
+    const jobWithFiles: JobWithFiles = {
+        ...job,
+        files: [],
+    };
+
+    return jobWithFiles;
 }

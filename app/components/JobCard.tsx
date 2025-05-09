@@ -1,4 +1,4 @@
-import { NotificationPayloadJobCompletedData } from 'chunkify';
+import { JobWithFiles } from '../api/store';
 
 import {
     Card,
@@ -9,11 +9,7 @@ import {
     CardTitle,
 } from '@/components/ui/card';
 
-export default function JobCard({
-    job,
-}: {
-    job: NotificationPayloadJobCompletedData;
-}) {
+export default function JobCard({ job }: { job: JobWithFiles }) {
     return (
         <Card>
             <CardHeader>
@@ -22,19 +18,19 @@ export default function JobCard({
                     <div className="space-y-2">
                         <div className="flex items-center gap-2">
                             <span className="font-medium">Format:</span>
-                            <span>{job.job.format.name}</span>
+                            <span>{job.format.name}</span>
                         </div>
                         <div className="flex items-center gap-2">
                             <span className="font-medium">Started:</span>
                             <span>
-                                {new Date(job.job.started_at).toLocaleString()}
+                                {new Date(job.started_at).toLocaleString()}
                             </span>
                         </div>
                         <div className="flex items-center gap-2">
                             <span className="font-medium">Transcoder:</span>
                             <span>
-                                {job.job.transcoder.type} (
-                                {job.job.transcoder.quantity})
+                                {job.transcoder.type} ({job.transcoder.quantity}
+                                )
                             </span>
                         </div>
                     </div>

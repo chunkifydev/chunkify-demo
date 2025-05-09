@@ -4,12 +4,13 @@ import { Upload } from 'chunkify';
 import FileUpload from './FileUpload';
 import StatusMessages from './StatusMessages';
 import JobCard from './JobCard';
-import { NotificationPayloadJobCompletedData } from 'chunkify';
+import { JobWithFiles } from '../api/store';
 interface Props {
     resetStore: () => Promise<void>;
     createUpload: (name: string) => Promise<Upload>;
     setUploadStore: (upload: Upload) => Promise<void>;
-    getJobStore: () => Promise<NotificationPayloadJobCompletedData[]>;
+    getJobStore: () => Promise<JobWithFiles[]>;
+    getUploadStore: () => Promise<Upload[]>;
 }
 
 export default function ChunkifyDemo({
@@ -17,13 +18,12 @@ export default function ChunkifyDemo({
     createUpload,
     setUploadStore,
     getJobStore,
+    getUploadStore,
 }: Props) {
     const [uploadedId, setUploadedId] = useState<string | null>(null);
     const [isUploadConfirmed, setIsUploadConfirmed] = useState(false);
     const [isFinished, setIsFinished] = useState(false);
-    const [job, setJob] = useState<NotificationPayloadJobCompletedData | null>(
-        null
-    );
+    const [job, setJob] = useState<JobWithFiles | null>(null);
 
     // Get job from store when isFinished is true
     useEffect(() => {
@@ -31,7 +31,7 @@ export default function ChunkifyDemo({
             const fetchJob = async () => {
                 const jobs = await getJobStore();
                 const videoJob = jobs.find(
-                    (job) => job.job.format.name === 'mp4/x264'
+                    (job) => job.format.name === 'mp4/x264'
                 );
                 if (videoJob) {
                     setJob(videoJob);
@@ -70,6 +70,8 @@ export default function ChunkifyDemo({
                 isFinished={isFinished}
                 setIsFinished={setIsFinished}
                 setIsUploadConfirmed={setIsUploadConfirmed}
+                getJobStore={getJobStore}
+                getUploadStore={getUploadStore}
             />
             {isFinished && job && <JobCard job={job} />}
         </div>

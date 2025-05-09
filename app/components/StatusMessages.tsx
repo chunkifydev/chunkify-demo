@@ -1,13 +1,15 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { NotificationPayloadJobCompletedData, Upload } from 'chunkify';
-
+import { Upload } from 'chunkify';
+import { JobWithFiles } from '../api/store';
 interface Props {
     uploadedId: string | null;
     isUploadConfirmed: boolean;
     isFinished: boolean;
     setIsFinished: (isFinished: boolean) => void;
     setIsUploadConfirmed: (isUploadConfirmed: boolean) => void;
+    getJobStore: () => Promise<JobWithFiles[]>;
+    getUploadStore: () => Promise<Upload[]>;
 }
 
 export default function StatusMessages({
@@ -16,25 +18,27 @@ export default function StatusMessages({
     isFinished,
     setIsFinished,
     setIsUploadConfirmed,
+    getJobStore,
+    getUploadStore,
 }: Props) {
-    const [jobs, setJobs] = useState<NotificationPayloadJobCompletedData[]>([]);
+    const [jobs, setJobs] = useState<JobWithFiles[]>([]);
+    const [upload, setUpload] = useState<Upload[]>([]);
 
     useEffect(() => {
         let isMounted = true;
 
         const fetchJobs = async () => {
             try {
-                const res = await fetch('/api/jobs');
-                const data = await res.json();
+                const jobs = await getJobStore();
                 if (isMounted) {
-                    setJobs([...data.jobs]);
+                    setJobs([...jobs]);
                     // Check if all jobs are finished or error
                     if (
-                        data.jobs.length === 2 &&
-                        data.jobs.every(
-                            (job: NotificationPayloadJobCompletedData) =>
-                                job.job.status === 'finished' ||
-                                job.job.status === 'error'
+                        jobs.length === 2 &&
+                        jobs.every(
+                            (job: JobWithFiles) =>
+                                job.status === 'finished' ||
+                                job.status === 'error'
                         )
                     ) {
                         setIsFinished(true);
@@ -45,11 +49,9 @@ export default function StatusMessages({
 
         const fetchUpload = async () => {
             try {
-                const res = await fetch('/api/uploads');
-                const data = await res.json();
-                const upload = data.upload as Upload | null;
+                const upload = await getUploadStore();
                 // If we have an upload in the store, it means it's confirmed
-                if (upload && upload.status === 'completed') {
+                if (upload.length > 0 && upload[0]?.status === 'completed') {
                     setIsUploadConfirmed(true);
                 }
             } catch (e) {}
@@ -118,7 +120,7 @@ export default function StatusMessages({
                         <span className={!isFinished ? 'animate-pulse' : ''}>
                             Transcoding in progress...
                         </span>
-                        {jobs.some((job) => job.job.status === 'error') && (
+                        {jobs.some((job) => job.status === 'error') && (
                             <span className="text-red-500 ml-2">
                                 Error: One or more jobs failed to process
                             </span>
