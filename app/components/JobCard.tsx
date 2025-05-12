@@ -12,7 +12,7 @@ import {
 
 export default function JobCard({ job }: { job: VideoJob }) {
     return (
-        <Card className="w-[420px] h-[270px]">
+        <Card className="w-[420px] h-[275px]">
             <CardContent>
                 {job.files && job.files[0]?.url ? (
                     <video
