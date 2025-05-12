@@ -12,6 +12,7 @@ export type VideoJob = {
 
 export type ImageJob = {
     job_id: string;
+    interval: number;
     files: File[];
     thumbnailsFor?: string;
 };
