@@ -21,7 +21,7 @@ export async function insertUpload(upload: VideoUpload): Promise<void> {
     console.log('Upload added to database');
 }
 
-export async function getAllUploads(): Promise<VideoUpload[]> {
+export async function allUploads(): Promise<VideoUpload[]> {
     const result = await db.select().from(uploads).all();
     return result.map((upload) => ({
         id: upload.id,
@@ -32,7 +32,7 @@ export async function getAllUploads(): Promise<VideoUpload[]> {
     }));
 }
 
-export async function getAllVideos(): Promise<VideoJob[]> {
+export async function allVideos(): Promise<VideoJob[]> {
     const result = await db.select().from(videos).all();
     return result.map((video) => ({
         id: video.id,

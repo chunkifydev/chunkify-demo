@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import JobCard from './JobCard';
 import { VideoJob } from '../types/types';
-import { getAllVideos } from '../db/store';
+import { allVideos } from '../db/store';
 import FileUpload from './FileUpload';
 
 export default function JobsIndex() {
@@ -11,7 +11,7 @@ export default function JobsIndex() {
 
     useEffect(() => {
         const fetchJobs = async () => {
-            const jobs = await getAllVideos();
+            const jobs = await allVideos();
             setJobs(jobs);
             setLoading(false);
         };
