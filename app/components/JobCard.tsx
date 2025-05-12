@@ -12,7 +12,7 @@ import {
 
 export default function JobCard({ job }: { job: VideoJob }) {
     return (
-        <Card className="w-[400px]">
+        <Card className="w-[420px] h-[270px]">
             <CardContent>
                 {job.files[0]?.url ? (
                     <video
@@ -20,6 +20,14 @@ export default function JobCard({ job }: { job: VideoJob }) {
                         className="w-full rounded-lg"
                         src={job.files[0].url}
                         poster={job.thumbnail}
+                        width={400}
+                        height={225}
+                        style={{
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                            aspectRatio: '16/9',
+                            objectFit: 'cover',
+                        }}
                     >
                         Your browser does not support the video tag.
                     </video>
