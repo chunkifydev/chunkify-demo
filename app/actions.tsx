@@ -39,8 +39,12 @@ export async function createVideoJob(upload: Upload) {
 }
 
 export async function createImageJob(upload: Upload, duration: number) {
+    console.log('Creating image job with duration:', duration);
     const conf = {
-        interval: Math.max(1, duration < 5 ? duration / 2 : duration / 10),
+        interval: Math.max(
+            1,
+            Math.round(duration < 5 ? duration / 2 : duration / 10)
+        ),
     };
     const thumbnailsFor = upload.metadata?.demo_id;
 
