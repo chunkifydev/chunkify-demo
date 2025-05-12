@@ -13,12 +13,12 @@ import {
     Upload,
     Job,
     NotificationPayloadJobCompletedData,
+    NotificationPayloadUploadCompletedData,
     NotificationPayloadUploadFailedData,
     JobCreateParams,
     FfmpegJpg,
     File,
 } from 'chunkify';
-import { client } from '../../client';
 
 export async function POST(req: NextRequest) {
     const body = await req.json();
@@ -28,17 +28,22 @@ export async function POST(req: NextRequest) {
 
     switch (event) {
         case 'upload.completed': {
-            const upload = body.data?.upload as Upload | undefined;
-            console.log('Upload notification:', upload);
-            if (upload) {
-                if (await updateUpload(upload)) {
-                    console.log('Upload found in the store:', upload.id);
-                    if (upload.source_id) {
+            const payload = body.data as NotificationPayloadUploadCompletedData;
+
+            console.log('Upload notification');
+            if (payload) {
+                if (await updateUpload(payload.upload)) {
+                    if (payload.upload.source_id) {
                         // Create jobs from the source
                         try {
-                            const jobVideo = await createVideoJob(upload);
+                            const jobVideo = await createVideoJob(
+                                payload.upload
+                            );
                             await updateVideo(jobVideo);
-                            const jobImage = await createImageJob(upload);
+                            const jobImage = await createImageJob(
+                                payload.upload,
+                                payload.source.duration
+                            );
                             console.log('Created jobs:', jobVideo, jobImage);
                         } catch (error) {
                             console.error('Error creating jobs:', error);
@@ -46,7 +51,7 @@ export async function POST(req: NextRequest) {
                     } else {
                         console.log(
                             'No source_id found for upload:',
-                            upload.id
+                            payload.upload.id
                         );
                         throw new Error(
                             'Cannot create job.No source_id found for this upload'

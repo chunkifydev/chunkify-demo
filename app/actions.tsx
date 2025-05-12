@@ -38,9 +38,9 @@ export async function createVideoJob(upload: Upload) {
     return VideoJob;
 }
 
-export async function createImageJob(upload: Upload) {
+export async function createImageJob(upload: Upload, duration: number) {
     const conf = {
-        interval: 60,
+        interval: Math.max(1, duration < 5 ? duration / 2 : duration / 10),
     };
     const thumbnailsFor = upload.metadata?.demo_id;
 
@@ -57,6 +57,7 @@ export async function createImageJob(upload: Upload) {
     const job = await client.job.create(params);
     const ImageJob: ImageJob = {
         job_id: job.id,
+        interval: conf.interval,
         files: [],
         thumbnailsFor: thumbnailsFor,
     };
