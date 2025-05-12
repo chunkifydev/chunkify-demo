@@ -1,4 +1,4 @@
-import { JobWithFiles } from '../api/store';
+import { VideoJob } from '../api/store';
 import { Badge } from '@/components/ui/badge';
 
 import {
@@ -10,7 +10,7 @@ import {
     CardTitle,
 } from '@/components/ui/card';
 
-export default function JobCard({ job }: { job: JobWithFiles }) {
+export default function JobCard({ job }: { job: VideoJob }) {
     return (
         <Card className="w-[400px]">
             <CardContent>
@@ -25,12 +25,12 @@ export default function JobCard({ job }: { job: JobWithFiles }) {
                     </video>
                 ) : (
                     <div className="w-full aspect-video bg-black rounded-lg flex items-center justify-center text-white">
-                        Video not available yet
+                        Video not available
                     </div>
                 )}
             </CardContent>
             <CardFooter className="flex justify-between">
-                <span className="font-medium">{job.metadata?.title}</span>
+                <span className="font-medium">{job.title}</span>
                 <Badge
                     variant={
                         job.status === 'finished'

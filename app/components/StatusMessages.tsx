@@ -1,14 +1,14 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { Upload } from 'chunkify';
-import { JobWithFiles } from '../api/store';
+import { VideoJob } from '../api/store';
 interface Props {
     uploadedId: string | null;
     isUploadConfirmed: boolean;
     isFinished: boolean;
     setIsFinished: (isFinished: boolean) => void;
     setIsUploadConfirmed: (isUploadConfirmed: boolean) => void;
-    getJobStore: () => Promise<JobWithFiles[]>;
+    getJobStore: () => Promise<VideoJob[]>;
     getUploadStore: () => Promise<Upload[]>;
 }
 
@@ -21,7 +21,7 @@ export default function StatusMessages({
     getJobStore,
     getUploadStore,
 }: Props) {
-    const [jobs, setJobs] = useState<JobWithFiles[]>([]);
+    const [jobs, setJobs] = useState<VideoJob[]>([]);
     const [upload, setUpload] = useState<Upload[]>([]);
 
     useEffect(() => {
@@ -36,7 +36,7 @@ export default function StatusMessages({
                     if (
                         jobs.length === 2 &&
                         jobs.every(
-                            (job: JobWithFiles) =>
+                            (job: VideoJob) =>
                                 job.status === 'finished' ||
                                 job.status === 'error'
                         )

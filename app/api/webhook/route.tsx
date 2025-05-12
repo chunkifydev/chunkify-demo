@@ -4,8 +4,9 @@ import {
     getJobStore,
     addJobToStore,
     updateUploadStore,
-    JobWithFiles,
-    updateJobStore,
+    VideoJob,
+    ImageJob,
+    updateJob,
 } from '../store';
 import {
     Upload,
@@ -13,6 +14,7 @@ import {
     NotificationPayloadJobCompletedData,
     JobCreateParams,
     FfmpegJpg,
+    File,
 } from 'chunkify';
 import { client } from '../../client';
 
@@ -39,13 +41,9 @@ export async function POST(req: NextRequest) {
                             upload.id
                         );
                         try {
-                            const jobVideo = await createJob(upload, 'video');
-                            await updateJobStore(
-                                jobVideo,
-                                jobVideo.metadata?.demo_id
-                            );
-                            const jobImage = await createJob(upload, 'image');
-                            await addJobToStore(jobImage);
+                            const jobVideo = await createVideoJob(upload);
+                            await updateJob(jobVideo.id, jobVideo.status);
+                            const jobImage = await createImageJob(upload);
                             console.log('Created jobs:', jobVideo, jobImage);
                         } catch (error) {
                             console.error('Error creating jobs:', error);
@@ -70,16 +68,29 @@ export async function POST(req: NextRequest) {
                 // Convert the payload to a JobWithFiles object
                 const jobWithFiles = {
                     ...payload.job,
+                    id: payload.job.metadata?.demo_id,
+                    job_id: payload.job.id,
+                    title: payload.job.metadata?.title,
+                    created_at: payload.job.created_at,
+                    status: payload.job.status,
                     files: payload.files,
                 };
-
-                await updateJobStore(jobWithFiles);
-                // If image jobs add thumbnail from it to the associated videoJob
-                if (jobWithFiles.format.name === 'jpg') {
+                // update the job files and status since it's finished
+                await updateJob(
+                    payload.job.metadata?.demo_id,
+                    payload.job.status,
+                    payload.files
+                );
+                // If this an image job, add thumbnail from it to the associated videoJob
+                if (payload.job.format.name === 'jpg') {
                     console.log(
                         'Image job completed, adding thumbnail to video job'
                     );
-                    await addThumbnailFrom(jobWithFiles, jobStore);
+                    await addThumbnail(
+                        payload.job.metadata?.demo_id,
+                        payload.files,
+                        jobStore
+                    );
                 }
             }
             break;
@@ -90,9 +101,11 @@ export async function POST(req: NextRequest) {
             if (payload && payload.job.id) {
                 const jobWithFiles = {
                     ...payload.job,
-                    files: payload.files,
                 };
-                await updateJobStore(jobWithFiles);
+                await updateJob(
+                    jobWithFiles.metadata?.demo_id,
+                    jobWithFiles.status
+                );
             }
             break;
         }
@@ -104,45 +117,59 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true });
 }
 
-async function createJob(upload: Upload, format: 'video' | 'image') {
-    let conf = {};
-    if (format === 'image') {
-        conf = {
-            interval: 60,
-        };
-    }
+async function createVideoJob(upload: Upload) {
     const params: JobCreateParams = {
         source_id: upload.source_id,
         format: {
-            name: format === 'video' ? 'mp4/x264' : 'jpg',
-            config: conf,
+            name: 'mp4/x264',
+            config: {},
         },
         ...(upload.metadata && { metadata: upload.metadata }),
     };
 
     const job = await client.job.create(params);
-    const jobWithFiles: JobWithFiles = {
-        ...job,
+    const VideoJob: VideoJob = {
+        id: upload.metadata?.demo_id,
+        job_id: job.id,
+        status: job.status,
+        title: job.metadata?.title,
+        created_at: job.created_at,
         files: [],
     };
 
-    return jobWithFiles;
+    return VideoJob;
 }
 
-async function addThumbnailFrom(
-    jobCompleted: JobWithFiles,
-    jobStore: JobWithFiles[]
-) {
-    const job = jobStore.find(
-        (job) =>
-            job.metadata?.demo_id === jobCompleted.metadata?.demo_id &&
-            job.format.name !== 'jpg'
-    );
-    if (job && jobCompleted.files.length > 0) {
+async function createImageJob(upload: Upload) {
+    const conf = {
+        interval: 60,
+    };
+    const thumbnailsFor = upload.metadata?.demo_id;
+
+    const params: JobCreateParams = {
+        source_id: upload.source_id,
+        format: {
+            name: 'jpg',
+            config: conf,
+        },
+        ...(upload.metadata && { metadata: upload.metadata }),
+    };
+    const job = await client.job.create(params);
+    const ImageJob: ImageJob = {
+        job_id: job.id,
+        files: [],
+        thumbnailsFor: thumbnailsFor,
+    };
+    return ImageJob;
+}
+
+async function addThumbnail(id: string, files: File[], jobStore: VideoJob[]) {
+    const job = jobStore.find((job) => job.id === id);
+    if (job && files.length > 0) {
         console.log('Video job found, adding thumbnail from image job');
         // Take a thunmbnail that is middle of the video roughly
-        const thumbnailIndex = Math.floor(jobCompleted.files.length / 2);
-        job.thumbnail = jobCompleted.files[thumbnailIndex].url;
-        await updateJobStore(job);
+        const thumbnailIndex = Math.floor(files.length / 2);
+        //Update the job with the thumbnail
+        job.thumbnail = files[thumbnailIndex].url;
     }
 }

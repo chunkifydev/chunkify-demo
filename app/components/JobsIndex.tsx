@@ -1,24 +1,21 @@
 'use client';
 import { useState, useEffect } from 'react';
 import JobCard from './JobCard';
-import { JobWithFiles } from '../api/store';
+import { VideoJob } from '../api/store';
 import FileUpload from './FileUpload';
 import { Button } from '@/components/ui/button';
 
 export default function JobsIndex({
     getJobStore,
 }: {
-    getJobStore: () => Promise<JobWithFiles[]>;
+    getJobStore: () => Promise<VideoJob[]>;
 }) {
-    const [jobs, setJobs] = useState<JobWithFiles[]>([]);
+    const [jobs, setJobs] = useState<VideoJob[]>([]);
 
     useEffect(() => {
         const fetchJobs = async () => {
             const jobs = await getJobStore();
-            const videoJobs = jobs.filter(
-                (job) => job.format.name === 'mp4/x264'
-            );
-            setJobs(videoJobs);
+            setJobs(jobs);
         };
 
         // Fetch immediately
