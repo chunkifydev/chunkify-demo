@@ -1,23 +1,14 @@
 'use client';
 import { useDropzone } from 'react-dropzone';
-import { useState, useEffect } from 'react';
-import { Upload } from 'chunkify';
-import { addJobToStore, newStoreJob, addToUploadStore } from '@/app/api/store';
+import { useState } from 'react';
 import { createUpload } from '@/app/actions';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
+import { insertUpload, insertVideo } from '@/app/db/store';
 
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 
 export default function FileUpload() {
     const [progress, setProgress] = useState(0);
@@ -68,9 +59,8 @@ export default function FileUpload() {
                 xhr.send(file);
             });
 
-            await addToUploadStore(upload);
-            const job = await newStoreJob(upload.metadata?.demo_id, title);
-            await addJobToStore(job);
+            await insertUpload(upload);
+            await insertVideo(upload.metadata?.demo_id, title);
             setIsUploaded(true);
         } catch (err) {
             setError('Upload failed: ' + err);

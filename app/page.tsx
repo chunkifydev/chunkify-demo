@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import { getJobStore } from './api/store';
 import JobsIndex from './components/JobsIndex';
 import FileUpload from './components/FileUpload';
 export default function Home() {
@@ -22,7 +21,7 @@ export default function Home() {
                 </div>
 
                 <div className="flex items-center justify-center mt-16">
-                    <JobsIndex getJobStore={getJobStore} />
+                    <JobsIndex />
                 </div>
             </main>
             <footer className="mt-auto flex gap-[24px] flex-wrap items-center justify-center">

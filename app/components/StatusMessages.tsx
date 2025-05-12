@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { Upload } from 'chunkify';
-import { VideoJob } from '../api/store';
+import { VideoJob } from '../types/types';
 interface Props {
     uploadedId: string | null;
     isUploadConfirmed: boolean;

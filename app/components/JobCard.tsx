@@ -1,4 +1,4 @@
-import { VideoJob } from '../api/store';
+import { VideoJob } from '../types/types';
 import { Badge } from '@/components/ui/badge';
 
 import {
@@ -14,12 +14,12 @@ export default function JobCard({ job }: { job: VideoJob }) {
     return (
         <Card className="w-[420px] h-[270px]">
             <CardContent>
-                {job.files[0]?.url ? (
+                {job.files && job.files[0]?.url ? (
                     <video
                         controls
                         className="w-full rounded-lg"
                         src={job.files[0].url}
-                        poster={job.thumbnail}
+                        poster={job.thumbnail ?? undefined}
                         width={400}
                         height={225}
                         style={{

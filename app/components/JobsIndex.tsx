@@ -1,20 +1,16 @@
 'use client';
 import { useState, useEffect } from 'react';
 import JobCard from './JobCard';
-import { VideoJob } from '../api/store';
+import { VideoJob } from '../types/types';
+import { getAllVideos } from '../db/store';
 import FileUpload from './FileUpload';
-import { Button } from '@/components/ui/button';
 
-export default function JobsIndex({
-    getJobStore,
-}: {
-    getJobStore: () => Promise<VideoJob[]>;
-}) {
+export default function JobsIndex() {
     const [jobs, setJobs] = useState<VideoJob[]>([]);
 
     useEffect(() => {
         const fetchJobs = async () => {
-            const jobs = await getJobStore();
+            const jobs = await getAllVideos();
             setJobs(jobs);
         };
 
@@ -26,7 +22,7 @@ export default function JobsIndex({
 
         // Cleanup
         return () => clearInterval(interval);
-    }, [getJobStore]);
+    }, []);
 
     return (
         <div className="flex-1 flex items-center justify-center">

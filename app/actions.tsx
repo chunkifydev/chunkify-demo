@@ -1,8 +1,10 @@
 'use server';
 
 import { client } from './client';
-import { UploadCreateParamsMetadata, JobCreateParams } from 'chunkify';
-import { generateDemoId } from './api/store';
+import { UploadCreateParamsMetadata, JobCreateParams, Upload } from 'chunkify';
+import { VideoJob, ImageJob } from './types/types';
+
+import { generateDemoId } from './db/store';
 
 export async function createUpload(title: string) {
     const metadata: UploadCreateParamsMetadata = {
@@ -11,4 +13,52 @@ export async function createUpload(title: string) {
     };
 
     return await client.upload.create({ metadata: metadata });
+}
+
+export async function createVideoJob(upload: Upload) {
+    const params: JobCreateParams = {
+        source_id: upload.source_id,
+        format: {
+            name: 'mp4/x264',
+            config: {},
+        },
+        ...(upload.metadata && { metadata: upload.metadata }),
+    };
+
+    const job = await client.job.create(params);
+    const VideoJob: VideoJob = {
+        id: upload.metadata?.demo_id,
+        job_id: job.id,
+        status: job.status,
+        title: job.metadata?.title,
+        created_at: job.created_at,
+        files: [],
+    };
+
+    return VideoJob;
+}
+
+export async function createImageJob(upload: Upload) {
+    const conf = {
+        interval: 60,
+    };
+    const thumbnailsFor = upload.metadata?.demo_id;
+
+    const params: JobCreateParams = {
+        source_id: upload?.source_id || '',
+        format: {
+            name: 'jpg',
+            config: conf,
+        },
+        metadata: {
+            thumbnails_for: thumbnailsFor,
+        },
+    };
+    const job = await client.job.create(params);
+    const ImageJob: ImageJob = {
+        job_id: job.id,
+        files: [],
+        thumbnailsFor: thumbnailsFor,
+    };
+    return ImageJob;
 }
