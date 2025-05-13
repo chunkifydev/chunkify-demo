@@ -1,10 +1,10 @@
 'use server';
 
-import { client } from './client';
+import { client } from '../client';
 import { UploadCreateParamsMetadata, JobCreateParams, Upload } from 'chunkify';
-import { VideoJob, ImageJob } from './types/types';
+import { VideoJob, ImageJob } from '../types';
 
-import { generateDemoId } from './db/store';
+import { generateDemoId } from '../db/store';
 
 export async function createUpload(title: string) {
     const metadata: UploadCreateParamsMetadata = {
@@ -33,6 +33,7 @@ export async function createVideoJob(upload: Upload) {
         title: job.metadata?.title,
         created_at: job.created_at,
         files: [],
+        thumbnail: null,
     };
 
     return VideoJob;

@@ -1,7 +1,7 @@
 'use client';
 import { useDropzone } from 'react-dropzone';
 import { useState } from 'react';
-import { createUpload } from '@/app/actions';
+import { createUpload } from '@/app/actions/actions';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';

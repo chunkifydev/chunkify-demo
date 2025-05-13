@@ -1,18 +1,26 @@
 'use client';
 import { useState, useEffect } from 'react';
-import JobCard from './JobCard';
-import { VideoJob } from '../types/types';
+import VideoCard from './VideoCard';
+import { VideoJob } from '../types';
 import { allVideos } from '../db/store';
 import FileUpload from './FileUpload';
 
-export default function JobsIndex() {
-    const [jobs, setJobs] = useState<VideoJob[]>([]);
+export default function VideosIndex({ searchQuery }: { searchQuery: string }) {
+    const [videos, setVideos] = useState<VideoJob[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchJobs = async () => {
             const jobs = await allVideos();
-            setJobs(jobs);
+            if (searchQuery) {
+                console.log('searchQuery', searchQuery);
+                const filteredVideos = jobs.filter((job) =>
+                    job.title?.toLowerCase().includes(searchQuery.toLowerCase())
+                );
+                setVideos(filteredVideos);
+            } else {
+                setVideos(jobs);
+            }
             setLoading(false);
         };
 
@@ -24,7 +32,7 @@ export default function JobsIndex() {
 
         // Cleanup
         return () => clearInterval(interval);
-    }, []);
+    }, [searchQuery]);
 
     if (loading) {
         return (
@@ -39,10 +47,10 @@ export default function JobsIndex() {
 
     return (
         <div className="flex-1 flex items-center justify-center">
-            {jobs.length > 0 ? (
+            {videos.length > 0 ? (
                 <div className="grid grid-cols-3 gap-4">
-                    {jobs.map((job) => (
-                        <JobCard
+                    {videos.map((job) => (
+                        <VideoCard
                             key={job.id}
                             job={job}
                         />

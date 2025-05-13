@@ -2,7 +2,7 @@
 
 import { db } from './index';
 import { uploads, videos } from './schema';
-import { VideoJob, VideoUpload } from '../types/types';
+import { VideoJob, VideoUpload } from '../types';
 import { eq } from 'drizzle-orm';
 import { File } from 'chunkify';
 
@@ -150,4 +150,28 @@ export async function addThumbnail(id: string, files: File[]) {
 
 export async function generateDemoId(): Promise<string> {
     return Date.now().toString(36) + Math.random().toString(36).substring(2);
+}
+
+export async function getVideoById(id: string): Promise<VideoJob | null> {
+    const result = await db
+        .select()
+        .from(videos)
+        .where(eq(videos.id, id))
+        .limit(1)
+        .all();
+
+    if (result.length === 0) {
+        return null;
+    }
+
+    const video = result[0];
+    return {
+        id: video.id,
+        job_id: video.job_id ?? null,
+        status: video.status,
+        title: video.title ?? null,
+        created_at: video.created_at,
+        thumbnail: video.thumbnail ?? null,
+        files: (video.files ?? null) as File[] | null,
+    };
 }

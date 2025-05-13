@@ -7,17 +7,11 @@ import {
     updateVideoStatus,
     updateVideoStatusAndFiles,
 } from '../../db/store';
-import { VideoJob, ImageJob } from '../../types/types';
-import { createVideoJob, createImageJob } from '../../actions';
+import { createVideoJob, createImageJob } from '../../actions/actions';
 import {
     Upload,
-    Job,
     NotificationPayloadJobCompletedData,
     NotificationPayloadUploadCompletedData,
-    NotificationPayloadUploadFailedData,
-    JobCreateParams,
-    FfmpegJpg,
-    File,
 } from 'chunkify';
 
 export async function POST(req: NextRequest) {

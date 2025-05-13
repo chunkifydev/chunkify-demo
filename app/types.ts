@@ -7,14 +7,14 @@ export type VideoJob = {
     status: string;
     created_at: string;
     files: File[] | null;
-    thumbnail?: string | null;
+    thumbnail: string | null;
 };
 
 export type ImageJob = {
     job_id: string;
     interval: number;
     files: File[];
-    thumbnailsFor?: string;
+    thumbnailsFor: string;
 };
 
 export type VideoUpload = {
