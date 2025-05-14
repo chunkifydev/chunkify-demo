@@ -2,8 +2,8 @@
 
 import { db } from './index';
 import { uploads, videos } from './schema';
-import { VideoJob, VideoUpload } from '../types';
-import { eq } from 'drizzle-orm';
+import { Video, VideoUpload } from '../types';
+import { eq, inArray } from 'drizzle-orm';
 import { File } from 'chunkify';
 
 export async function insertUpload(upload: VideoUpload): Promise<void> {
@@ -32,8 +32,12 @@ export async function allUploads(): Promise<VideoUpload[]> {
     }));
 }
 
-export async function allVideos(): Promise<VideoJob[]> {
-    const result = await db.select().from(videos).all();
+export async function allVideos(statuses?: string[]): Promise<Video[]> {
+    const query = db.select().from(videos);
+    const result = statuses?.length
+        ? await query.where(inArray(videos.status, statuses)).all()
+        : await query.all();
+
     return result.map((video) => ({
         id: video.id,
         job_id: video.job_id ?? '',
@@ -54,6 +58,7 @@ export async function insertVideo(id: string, title?: string): Promise<void> {
             status: 'waiting',
             title: title ?? null,
             files: [],
+            created_at: new Date().toISOString(),
             thumbnail: null,
         } as typeof videos.$inferInsert)
         .run();
@@ -76,7 +81,7 @@ export async function updateUpload(upload: VideoUpload): Promise<boolean> {
     return result.changes > 0;
 }
 
-export async function updateVideo(job: VideoJob): Promise<void> {
+export async function updateVideo(job: Video): Promise<void> {
     await db
         .update(videos)
         .set({
@@ -152,7 +157,7 @@ export async function generateDemoId(): Promise<string> {
     return Date.now().toString(36) + Math.random().toString(36).substring(2);
 }
 
-export async function getVideoById(id: string): Promise<VideoJob | null> {
+export async function getVideoById(id: string): Promise<Video | null> {
     const result = await db
         .select()
         .from(videos)

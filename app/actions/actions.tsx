@@ -2,7 +2,7 @@
 
 import { client } from '../client';
 import { UploadCreateParamsMetadata, JobCreateParams, Upload } from 'chunkify';
-import { VideoJob, ImageJob } from '../types';
+import { Video, Images } from '../types';
 
 import { generateDemoId } from '../db/store';
 
@@ -26,10 +26,10 @@ export async function createVideoJob(upload: Upload) {
     };
 
     const job = await client.job.create(params);
-    const VideoJob: VideoJob = {
+    const VideoJob: Video = {
         id: upload.metadata?.demo_id,
         job_id: job.id,
-        status: job.status,
+        status: 'processing',
         title: job.metadata?.title,
         created_at: job.created_at,
         files: [],
@@ -60,7 +60,7 @@ export async function createImageJob(upload: Upload, duration: number) {
         },
     };
     const job = await client.job.create(params);
-    const ImageJob: ImageJob = {
+    const ImageJob: Images = {
         job_id: job.id,
         interval: conf.interval,
         files: [],

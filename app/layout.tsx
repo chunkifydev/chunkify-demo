@@ -5,6 +5,9 @@ import Link from 'next/link';
 import FileUpload from './components/FileUpload';
 import './globals.css';
 import SearchInput from './components/SearchInput';
+import { Button } from '@/components/ui/button';
+import { Binoculars } from 'lucide-react';
+
 const geistSans = Geist({
     variable: '--font-geist-sans',
     subsets: ['latin'],
@@ -43,7 +46,18 @@ export default function RootLayout({
                                 />
                             </Link>
                             <SearchInput />
-                            <FileUpload />
+                            <div className="flex items-center gap-6">
+                                <Link href="/monitor">
+                                    <Button
+                                        variant="outline"
+                                        className="flex items-center gap-2"
+                                    >
+                                        <Binoculars className="h-4 w-4" />
+                                        <span>Monitor</span>
+                                    </Button>
+                                </Link>
+                                <FileUpload />
+                            </div>
                         </div>
                     </header>
 

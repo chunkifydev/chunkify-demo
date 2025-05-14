@@ -1,6 +1,6 @@
 import { File } from 'chunkify';
 
-export type VideoJob = {
+export type Video = {
     id: string;
     job_id: string | null;
     title: string | null;
@@ -10,7 +10,7 @@ export type VideoJob = {
     thumbnail: string | null;
 };
 
-export type ImageJob = {
+export type Images = {
     job_id: string;
     interval: number;
     files: File[];

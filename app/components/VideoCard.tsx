@@ -1,4 +1,4 @@
-import { VideoJob } from '../types';
+import { Video } from '../types';
 import { Badge } from '@/components/ui/badge';
 import { useRouter } from 'next/navigation';
 
@@ -10,8 +10,8 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
-
-export default function VideoCard({ job }: { job: VideoJob }) {
+import { timeAgo } from '../utils';
+export default function VideoCard({ job }: { job: Video }) {
     const router = useRouter();
     return (
         <Card
@@ -47,17 +47,9 @@ export default function VideoCard({ job }: { job: VideoJob }) {
             </CardContent>
             <CardFooter className="flex justify-between">
                 <span className="font-medium">{job.title}</span>
-                <Badge
-                    variant={
-                        job.status === 'finished'
-                            ? 'success'
-                            : job.status === 'error'
-                            ? 'destructive'
-                            : 'pending'
-                    }
-                >
-                    {job.status}
-                </Badge>
+                <span className="text-sm text-muted-foreground">
+                    {timeAgo(job.created_at)}
+                </span>
             </CardFooter>
         </Card>
     );

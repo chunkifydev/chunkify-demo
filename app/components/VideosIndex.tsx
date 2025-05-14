@@ -1,26 +1,36 @@
 'use client';
 import { useState, useEffect } from 'react';
 import VideoCard from './VideoCard';
-import { VideoJob } from '../types';
+import { Video } from '../types';
 import { allVideos } from '../db/store';
 import FileUpload from './FileUpload';
-
+import { Button } from '@/components/ui/button';
+import { Binoculars } from 'lucide-react';
 export default function VideosIndex({ searchQuery }: { searchQuery: string }) {
-    const [videos, setVideos] = useState<VideoJob[]>([]);
+    const [videos, setVideos] = useState<Video[]>([]);
+    const [countProcessing, setCountProcessing] = useState(0);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchJobs = async () => {
-            const jobs = await allVideos();
+            const vids = await allVideos([]);
+            const processing = vids.filter((vid) =>
+                ['waiting', 'processing'].includes(vid.status)
+            );
+            setCountProcessing(processing.length);
+            const finished = vids.filter((vid) =>
+                vid.status.includes('finished')
+            );
             if (searchQuery) {
                 console.log('searchQuery', searchQuery);
-                const filteredVideos = jobs.filter((job) =>
-                    job.title?.toLowerCase().includes(searchQuery.toLowerCase())
+                const filteredVideos = finished.filter((vid) =>
+                    vid.title?.toLowerCase().includes(searchQuery.toLowerCase())
                 );
                 setVideos(filteredVideos);
             } else {
-                setVideos(jobs);
+                setVideos(finished);
             }
+
             setLoading(false);
         };
 
@@ -28,7 +38,7 @@ export default function VideosIndex({ searchQuery }: { searchQuery: string }) {
         fetchJobs();
 
         // Then set up interval
-        const interval = setInterval(fetchJobs, 1000);
+        const interval = setInterval(fetchJobs, 2000);
 
         // Cleanup
         return () => clearInterval(interval);
