@@ -122,10 +122,8 @@ export default function FileUpload() {
                                         Select a video file to start transcoding
                                     </p>
                                 )}
-                                {error && (
-                                    <p className="text-red-500">{error}</p>
-                                )}
                             </div>
+                            {error && <p className="text-red-500">{error}</p>}
                         </>
                     )}
                     {isUploading && (
@@ -144,9 +142,6 @@ export default function FileUpload() {
                                 className="w-[70%] [&>div]:bg-green-500"
                             />
                         </div>
-                    )}
-                    {isUploaded && (
-                        <p className="text-green-500">Upload done!</p>
                     )}
                 </div>
             </DialogContent>
