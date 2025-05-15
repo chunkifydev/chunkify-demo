@@ -8,6 +8,7 @@ export type Video = {
     created_at: string;
     files: File[] | null;
     thumbnail: string | null;
+    sprite: string | null;
 };
 
 export type Images = {

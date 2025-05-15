@@ -73,9 +73,9 @@ export default function FileUpload() {
             router.push('/monitor');
         } catch (err) {
             setError('Upload failed: ' + err);
+            setIsUploaded(false);
         } finally {
             setIsUploading(false);
-            setIsUploaded(false);
         }
     };
 

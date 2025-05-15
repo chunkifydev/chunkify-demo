@@ -1,3 +1,4 @@
+'use client';
 import { Video } from '../types';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -5,6 +6,12 @@ import { Download } from 'lucide-react';
 import { timeAgo } from '../utils';
 
 export default function Player({ video }: { video: Video }) {
+    // Add debugging
+    console.log('Video sprite URL:', video.sprite);
+    // Don't encode the URL here since it's already encoded
+    const proxiedUrl = `/api/proxy?url=${video.sprite}`;
+    console.log('Proxied URL:', proxiedUrl);
+
     return (
         <Card className="w-full max-w-5xl mx-auto border-0 shadow-none">
             <CardContent className="p-0">
@@ -21,6 +28,17 @@ export default function Player({ video }: { video: Video }) {
                             objectFit: 'contain',
                         }}
                     >
+                        {video.sprite && (
+                            <track
+                                kind="thumbnails"
+                                src={video.sprite}
+                                default
+                                onLoad={() => console.log('Track loaded')}
+                                onError={(e) =>
+                                    console.error('Track error:', e)
+                                }
+                            />
+                        )}{' '}
                         Your browser does not support the video tag.
                     </video>
                 ) : (

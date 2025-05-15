@@ -2,12 +2,15 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import {
     addThumbnail,
+    addSprite,
     updateUpload,
     updateVideo,
-    updateVideoStatus,
-    updateVideoStatusAndFiles,
 } from '../../db/store';
-import { createVideoJob, createImageJob } from '../../actions/actions';
+import {
+    createVideoJob,
+    createImageJob,
+    createSpriteJob,
+} from '../../actions/actions';
 import {
     Upload,
     NotificationPayloadJobCompletedData,
@@ -33,12 +36,24 @@ export async function POST(req: NextRequest) {
                             const jobVideo = await createVideoJob(
                                 payload.upload
                             );
-                            await updateVideo(jobVideo);
+                            await updateVideo(jobVideo.id, {
+                                job_id: jobVideo.job_id,
+                                status: jobVideo.status,
+                            });
                             const jobImage = await createImageJob(
                                 payload.upload,
                                 payload.source.duration
                             );
-                            console.log('Created jobs:', jobVideo, jobImage);
+                            const jobSprite = await createSpriteJob(
+                                payload.upload,
+                                payload.source.duration
+                            );
+                            console.log(
+                                'Created jobs:',
+                                jobVideo,
+                                jobImage,
+                                jobSprite
+                            );
                         } catch (error) {
                             console.error('Error creating jobs:', error);
                         }
@@ -59,7 +74,9 @@ export async function POST(req: NextRequest) {
         case 'upload.failed': {
             const upload = body.data?.upload as Upload | undefined;
             if (upload && upload.metadata?.demo_id) {
-                await updateVideoStatus(upload.metadata?.demo_id, 'error');
+                await updateVideo(upload.metadata?.demo_id, {
+                    status: 'error',
+                });
             }
             if (upload) {
                 //await removeFromUploadStore(upload);
@@ -71,21 +88,28 @@ export async function POST(req: NextRequest) {
 
             if (payload && payload.job.id && payload.job.metadata?.demo_id) {
                 // update the job files and status since it's finished
-                await updateVideoStatusAndFiles(
-                    payload.job.metadata?.demo_id,
-                    payload.job.status,
-                    payload.files
-                );
+                await updateVideo(payload.job.metadata?.demo_id, {
+                    status: payload.job.status,
+                    files: payload.files,
+                });
             }
-            // If this an image job, add thumbnail from it to the associated videoJob
+            // If this an image job, add thumbnail or sprite to the associated video
             if (payload.job.format.name === 'jpg') {
                 console.log(
                     'Image job completed, adding thumbnail to video job'
                 );
-                await addThumbnail(
-                    payload.job.metadata?.thumbnails_for,
-                    payload.files
-                );
+                if (payload.job.metadata?.thumbnails_for) {
+                    await addThumbnail(
+                        payload.job.metadata.thumbnails_for,
+                        payload.files
+                    );
+                }
+                if (payload.job.metadata?.sprite_for) {
+                    await addSprite(
+                        payload.job.metadata.sprite_for,
+                        payload.files
+                    );
+                }
             }
             break;
         }
@@ -93,10 +117,9 @@ export async function POST(req: NextRequest) {
             const payload = body.data as NotificationPayloadJobCompletedData;
 
             if (payload && payload.job.id) {
-                await updateVideoStatus(
-                    payload.job.metadata?.demo_id,
-                    payload.job.status
-                );
+                await updateVideo(payload.job.metadata?.demo_id, {
+                    status: payload.job.status,
+                });
             }
             break;
         }

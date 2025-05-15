@@ -1,32 +1,31 @@
-'use client';
-
-import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { Video } from '../types';
 import { getVideoById } from '../db/store';
 import Player from './Player';
 
-export default function WatchPage() {
-    const videoId = useSearchParams().get('videoId');
-    const [video, setVideo] = useState<Video | null>(null);
-
-    useEffect(() => {
-        const fetchVideo = async () => {
-            if (!videoId) return;
-            const foundVideo = await getVideoById(videoId);
-            if (foundVideo) {
-                setVideo(foundVideo);
-            }
-        };
-        fetchVideo();
-    }, [videoId]);
+export default async function WatchPage({
+    searchParams,
+}: {
+    searchParams: Promise<{ videoId?: string }>;
+}) {
+    const { videoId } = await searchParams;
 
     if (!videoId) {
-        return <div>No video ID provided</div>;
+        return (
+            <div className="flex-1 flex items-center justify-center mt-32">
+                <p className="text-sm text-gray-500">No video ID provided</p>
+            </div>
+        );
     }
 
+    const video = await getVideoById(videoId);
+
     if (!video) {
-        return <div>Loading...</div>;
+        return (
+            <div className="flex-1 flex items-center justify-center mt-32">
+                <p className="text-sm text-gray-500">
+                    No video found with this id
+                </p>
+            </div>
+        );
     }
 
     return (

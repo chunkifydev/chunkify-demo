@@ -1,7 +1,12 @@
 'use server';
 
 import { client } from '../client';
-import { UploadCreateParamsMetadata, JobCreateParams, Upload } from 'chunkify';
+import {
+    UploadCreateParamsMetadata,
+    JobCreateParams,
+    Upload,
+    FfmpegJpg,
+} from 'chunkify';
 import { Video, Images } from '../types';
 
 import { generateDemoId } from '../db/store';
@@ -34,6 +39,7 @@ export async function createVideoJob(upload: Upload) {
         created_at: job.created_at,
         files: [],
         thumbnail: null,
+        sprite: null,
     };
 
     return VideoJob;
@@ -67,4 +73,32 @@ export async function createImageJob(upload: Upload, duration: number) {
         thumbnailsFor: thumbnailsFor,
     };
     return ImageJob;
+}
+
+export async function createSpriteJob(upload: Upload, duration: number) {
+    console.log('Creating image job with duration:', duration);
+    const conf: FfmpegJpg = {
+        interval: duration < 10 ? 1 : 5, // 1 second for videos under 10s, 5 seconds for longer videos
+        sprite: true,
+    };
+    const spriteFor = upload.metadata?.demo_id;
+
+    const params: JobCreateParams = {
+        source_id: upload?.source_id || '',
+        format: {
+            name: 'jpg',
+            config: conf,
+        },
+        metadata: {
+            sprite_for: spriteFor,
+        },
+    };
+    const job = await client.job.create(params);
+    const spriteJob: Images = {
+        job_id: job.id,
+        interval: conf.interval,
+        files: [],
+        thumbnailsFor: spriteFor,
+    };
+    return spriteJob;
 }

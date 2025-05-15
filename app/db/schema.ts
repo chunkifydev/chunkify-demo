@@ -21,4 +21,5 @@ export const videos = sqliteTable('videos', {
         .default(sql`CURRENT_TIMESTAMP`),
     files: text('files', { mode: 'json' }),
     thumbnail: text('thumbnail'),
+    sprite: text('sprite'),
 });
