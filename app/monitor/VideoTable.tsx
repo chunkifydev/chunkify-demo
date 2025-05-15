@@ -16,18 +16,22 @@ export default function VideoTable({ videos }: { videos: Video[] }) {
             <Table>
                 <TableHeader>
                     <TableRow>
-                        <TableHead>Title</TableHead>
-                        <TableHead>Video ID</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Created</TableHead>
+                        <TableHead className="w-[300px]">Title</TableHead>
+                        <TableHead className="w-[200px]">Video ID</TableHead>
+                        <TableHead className="w-[150px]">Status</TableHead>
+                        <TableHead className="w-[150px]">Created</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     {videos.map((video) => (
                         <TableRow key={video.id}>
-                            <TableCell>{video.title}</TableCell>
-                            <TableCell>{video.id}</TableCell>
-                            <TableCell>
+                            <TableCell className="whitespace-nowrap truncate max-w-[300px]">
+                                {video.title}
+                            </TableCell>
+                            <TableCell className="whitespace-nowrap truncate max-w-[200px]">
+                                {video.id}
+                            </TableCell>
+                            <TableCell className="whitespace-nowrap">
                                 <Badge
                                     variant={
                                         video.status === 'error'
@@ -42,7 +46,9 @@ export default function VideoTable({ videos }: { videos: Video[] }) {
                                     )}
                                 </Badge>
                             </TableCell>
-                            <TableCell>{timeAgo(video.created_at)}</TableCell>
+                            <TableCell className="whitespace-nowrap">
+                                {timeAgo(video.created_at)}
+                            </TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
