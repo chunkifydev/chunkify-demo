@@ -4,6 +4,7 @@ import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Download } from 'lucide-react';
 import { timeAgo } from '../utils';
+import MediaThemeSutro from 'player.style/sutro/react';
 
 export default function Player({ video }: { video: Video }) {
     // Add debugging
@@ -16,31 +17,31 @@ export default function Player({ video }: { video: Video }) {
         <Card className="w-full max-w-5xl mx-auto border-0 shadow-none">
             <CardContent className="p-0">
                 {video.files && video.files[0]?.url ? (
-                    <video
-                        controls
-                        className="w-full rounded-lg"
-                        src={video.files[0].url}
-                        poster={video.thumbnail ?? undefined}
-                        style={{
-                            backgroundSize: 'cover',
-                            backgroundPosition: 'center',
-                            aspectRatio: '16/9',
-                            objectFit: 'contain',
-                        }}
-                    >
-                        {video.sprite && (
-                            <track
-                                kind="thumbnails"
-                                src={video.sprite}
-                                default
-                                onLoad={() => console.log('Track loaded')}
-                                onError={(e) =>
-                                    console.error('Track error:', e)
-                                }
-                            />
-                        )}{' '}
-                        Your browser does not support the video tag.
-                    </video>
+                    <MediaThemeSutro style={{ width: '100%' }}>
+                        <video
+                            slot="media"
+                            src={video.files[0].url}
+                            className="w-full rounded-lg"
+                            poster={video.thumbnail ?? undefined}
+                            playsInline
+                            style={{
+                                backgroundSize: 'cover',
+                                backgroundPosition: 'center',
+                                aspectRatio: '16/9',
+                                objectFit: 'contain',
+                            }}
+                        >
+                            {video.sprite && (
+                                <track
+                                    kind="metadata"
+                                    src={video.sprite}
+                                    srcLang="en"
+                                    label="thumbnails"
+                                    default
+                                />
+                            )}
+                        </video>
+                    </MediaThemeSutro>
                 ) : (
                     <div className="w-full aspect-video bg-black rounded-lg flex items-center justify-center text-white">
                         Video not available
