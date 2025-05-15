@@ -46,7 +46,9 @@ export default function VideoCard({ job }: { job: Video }) {
                 )}
             </CardContent>
             <CardFooter className="flex justify-between">
-                <span className="font-medium">{job.title}</span>
+                <span className="font-medium truncate max-w-[200px]">
+                    {job.title}
+                </span>
                 <span className="text-sm text-muted-foreground">
                     {timeAgo(job.created_at)}
                 </span>
