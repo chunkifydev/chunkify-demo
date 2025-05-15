@@ -3,6 +3,8 @@ import { File } from 'chunkify';
 export type Video = {
     id: string;
     job_id: string | null;
+    upload_id: string;
+    source_id: string | null;
     title: string | null;
     status: string;
     created_at: string;
@@ -18,10 +20,9 @@ export type Images = {
     thumbnailsFor: string;
 };
 
-export type VideoUpload = {
-    id: string;
-    source_id: string | null;
+// Add this type for job info
+export type JobInfo = {
     status: string;
-    created_at: string;
-    metadata: Record<string, any>;
+    progress?: number;
+    // add other fields you need
 };

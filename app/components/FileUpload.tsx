@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
-import { insertUpload, insertVideo } from '@/app/db/store';
+import { insertVideo } from '@/app/db/store';
 import { Upload } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
@@ -32,7 +32,7 @@ export default function FileUpload() {
         try {
             const file = acceptedFiles[0];
             // Create upload entry using server function
-            const upload = await createUpload(title);
+            const upload = await createUpload();
 
             // Upload file to pre-signed URL using XMLHttpRequest for progress
             await new Promise((resolve, reject) => {
@@ -66,7 +66,6 @@ export default function FileUpload() {
                 xhr.send(file);
             });
 
-            await insertUpload(upload);
             await insertVideo(upload.metadata?.demo_id, title);
             setIsUploaded(true);
             setOpen(false);

@@ -1,36 +1,10 @@
 'use server';
 
 import { db } from './index';
-import { uploads, videos } from './schema';
-import { Video, VideoUpload } from '../types';
-import { eq, inArray } from 'drizzle-orm';
+import { videos } from './schema';
+import { Video } from '../types';
+import { eq, inArray, sql } from 'drizzle-orm';
 import { File } from 'chunkify';
-
-export async function insertUpload(upload: VideoUpload): Promise<void> {
-    await db
-        .insert(uploads)
-        .values({
-            id: upload.id,
-            source_id: upload.source_id,
-            status: upload.status,
-            created_at: upload.created_at,
-            metadata: upload.metadata,
-        } as typeof uploads.$inferInsert)
-        .run();
-
-    console.log('Upload added to database');
-}
-
-export async function allUploads(): Promise<VideoUpload[]> {
-    const result = await db.select().from(uploads).all();
-    return result.map((upload) => ({
-        id: upload.id,
-        source_id: upload.source_id ?? '',
-        status: upload.status ?? '',
-        created_at: upload.created_at ?? '',
-        metadata: JSON.parse(upload.metadata as string) as Record<string, any>,
-    }));
-}
 
 export async function allVideos(statuses?: string[]): Promise<Video[]> {
     const query = db.select().from(videos);
@@ -41,12 +15,14 @@ export async function allVideos(statuses?: string[]): Promise<Video[]> {
     return result.map((video) => ({
         id: video.id,
         job_id: video.job_id ?? '',
+        source_id: video.source_id ?? '',
         status: video.status ?? '',
         title: video.title ?? '',
         created_at: video.created_at ?? '',
         thumbnail: video.thumbnail ?? '',
         sprite: video.sprite ?? '',
         files: (video.files || []) as File[],
+        upload_id: video.upload_id ?? '',
     }));
 }
 
@@ -68,21 +44,6 @@ export async function insertVideo(id: string, title?: string): Promise<void> {
     console.log('Video added to database');
 }
 
-export async function updateUpload(upload: VideoUpload): Promise<boolean> {
-    const result = await db
-        .update(uploads)
-        .set({
-            source_id: upload.source_id ?? undefined,
-            status: upload.status,
-            created_at: upload.created_at ?? undefined,
-            metadata: upload.metadata,
-        })
-        .where(eq(uploads.id, upload.id))
-        .run();
-
-    return result.changes > 0;
-}
-
 export async function updateVideo(
     id: string,
     updates: Partial<Video>
@@ -94,6 +55,13 @@ export async function updateVideo(
         .run();
 
     return result.changes > 0;
+}
+
+export async function removeVideo(id: string): Promise<boolean> {
+    // First delete the video
+    const videoResult = await db.delete(videos).where(eq(videos.id, id)).run();
+
+    return videoResult.changes > 0;
 }
 
 export async function addThumbnail(id: string, files: File[]) {
@@ -171,5 +139,7 @@ export async function getVideoById(id: string): Promise<Video | null> {
         thumbnail: video.thumbnail ?? null,
         files: (video.files ?? null) as File[] | null,
         sprite: video.sprite ?? null,
+        upload_id: video.upload_id ?? '',
+        source_id: video.source_id ?? null,
     };
 }

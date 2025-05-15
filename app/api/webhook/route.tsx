@@ -3,8 +3,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import {
     addThumbnail,
     addSprite,
-    updateUpload,
     updateVideo,
+    getVideoById,
 } from '../../db/store';
 import {
     createVideoJob,
@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
 
             console.log('Upload notification');
             if (payload) {
-                if (await updateUpload(payload.upload)) {
+                if (await getVideoById(payload.upload.metadata?.demo_id)) {
                     if (payload.upload.source_id) {
                         // Create jobs from the source
                         try {

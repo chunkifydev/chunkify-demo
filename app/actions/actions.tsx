@@ -11,13 +11,17 @@ import { Video, Images } from '../types';
 
 import { generateDemoId } from '../db/store';
 
-export async function createUpload(title: string) {
+export async function createUpload() {
     const metadata: UploadCreateParamsMetadata = {
         demo_id: await generateDemoId(),
-        title: title,
     };
 
     return await client.upload.create({ metadata: metadata });
+}
+
+export async function getJobInfo(job_id: string) {
+    const job = await client.job.get(job_id);
+    return job;
 }
 
 export async function createVideoJob(upload: Upload) {
@@ -40,6 +44,8 @@ export async function createVideoJob(upload: Upload) {
         files: [],
         thumbnail: null,
         sprite: null,
+        upload_id: upload.id,
+        source_id: upload.source_id,
     };
 
     return VideoJob;

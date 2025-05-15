@@ -9,6 +9,10 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { timeAgo } from '../utils';
+import { Button } from '@/components/ui/button';
+import { Trash } from 'lucide-react';
+import { removeVideo } from '../db/store';
+import JobInfoTooltip from './JobInfoTooltip';
 
 export default function VideoTable({ videos }: { videos: Video[] }) {
     return (
@@ -17,9 +21,10 @@ export default function VideoTable({ videos }: { videos: Video[] }) {
                 <TableHeader>
                     <TableRow>
                         <TableHead className="w-[300px]">Title</TableHead>
-                        <TableHead className="w-[200px]">Video ID</TableHead>
-                        <TableHead className="w-[150px]">Status</TableHead>
+                        <TableHead className="w-[150px]">Video ID</TableHead>
+                        <TableHead className="w-[100px]">Status</TableHead>
                         <TableHead className="w-[150px]">Created</TableHead>
+                        <TableHead className="w-[50px]">Actions</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -48,6 +53,25 @@ export default function VideoTable({ videos }: { videos: Video[] }) {
                             </TableCell>
                             <TableCell className="whitespace-nowrap">
                                 {timeAgo(video.created_at)}
+                            </TableCell>
+                            <TableCell className="whitespace-nowrap">
+                                {(video.status === 'waiting' ||
+                                    video.status === 'error') && (
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-8 w-8 text-destructive hover:text-destructive/90"
+                                        onClick={() => {
+                                            removeVideo(video.id);
+                                        }}
+                                    >
+                                        <Trash className="h-4 w-4" />
+                                    </Button>
+                                )}
+                                {video.status === 'processing' &&
+                                    video.job_id && (
+                                        <JobInfoTooltip job_id={video.job_id} />
+                                    )}
                             </TableCell>
                         </TableRow>
                     ))}
