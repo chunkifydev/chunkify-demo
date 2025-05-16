@@ -13,7 +13,7 @@ export default async function Home({
     return (
         <div className="min-h-screen p-8 flex flex-col">
             <main className="w-full max-w-7xl mx-auto flex-1 flex flex-col">
-                <div className="flex items-center justify-center mt-8">
+                <div className="flex items-center justify-center">
                     <VideosIndex searchQuery={searchQuery} />
                 </div>
             </main>

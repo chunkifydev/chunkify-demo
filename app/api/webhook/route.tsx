@@ -38,6 +38,7 @@ export async function POST(req: NextRequest) {
                             );
                             await updateVideo(jobVideo.id, {
                                 job_id: jobVideo.job_id,
+                                source_id: jobVideo.source_id,
                                 status: jobVideo.status,
                             });
                             const jobImage = await createImageJob(

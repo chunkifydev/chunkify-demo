@@ -7,12 +7,6 @@ import { timeAgo } from '../utils';
 import MediaThemeSutro from 'player.style/sutro/react';
 
 export default function Player({ video }: { video: Video }) {
-    // Add debugging
-    console.log('Video sprite URL:', video.sprite);
-    // Don't encode the URL here since it's already encoded
-    const proxiedUrl = `/api/proxy?url=${video.sprite}`;
-    console.log('Proxied URL:', proxiedUrl);
-
     return (
         <Card className="w-full max-w-5xl mx-auto border-0 shadow-none">
             <CardContent className="p-0">
@@ -30,6 +24,7 @@ export default function Player({ video }: { video: Video }) {
                                 aspectRatio: '16/9',
                                 objectFit: 'contain',
                             }}
+                            crossOrigin="anonymous"
                         >
                             {video.sprite && (
                                 <track

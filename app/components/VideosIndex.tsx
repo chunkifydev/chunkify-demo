@@ -5,11 +5,13 @@ import { Video } from '../types';
 import { allVideos } from '../db/store';
 import FileUpload from './FileUpload';
 import { Button } from '@/components/ui/button';
-import { Binoculars } from 'lucide-react';
+
+import { ArrowUpDown } from 'lucide-react';
 export default function VideosIndex({ searchQuery }: { searchQuery: string }) {
     const [videos, setVideos] = useState<Video[]>([]);
     const [countProcessing, setCountProcessing] = useState(0);
     const [loading, setLoading] = useState(true);
+    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
     useEffect(() => {
         const fetchJobs = async () => {
@@ -44,6 +46,12 @@ export default function VideosIndex({ searchQuery }: { searchQuery: string }) {
         return () => clearInterval(interval);
     }, [searchQuery]);
 
+    const sortedVideos = [...videos].sort((a, b) => {
+        const dateA = new Date(a.created_at).getTime();
+        const dateB = new Date(b.created_at).getTime();
+        return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+    });
+
     if (loading) {
         return (
             <div className="flex-1 flex items-center justify-center mt-16">
@@ -56,16 +64,36 @@ export default function VideosIndex({ searchQuery }: { searchQuery: string }) {
     }
 
     return (
-        <div className="flex-1 flex items-center justify-center">
+        <div>
             {videos.length > 0 ? (
-                <div className="grid grid-cols-3 gap-4">
-                    {videos.map((job) => (
-                        <VideoCard
-                            key={job.id}
-                            job={job}
-                        />
-                    ))}
-                </div>
+                <>
+                    <div className="w-full mb-4 flex justify-end"></div>
+                    <div className="grid grid-cols-3 gap-4">
+                        <div className="col-span-3">
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() =>
+                                    setSortOrder(
+                                        sortOrder === 'asc' ? 'desc' : 'asc'
+                                    )
+                                }
+                                className="flex items-center gap-2"
+                            >
+                                <ArrowUpDown className="h-4 w-4" />
+                                {sortOrder === 'asc'
+                                    ? 'Oldest first'
+                                    : 'Latest first'}
+                            </Button>
+                        </div>
+                        {sortedVideos.map((job) => (
+                            <VideoCard
+                                key={job.id}
+                                job={job}
+                            />
+                        ))}
+                    </div>
+                </>
             ) : (
                 <div className="flex flex-col gap-4 items-center justify-center mt-16">
                     <p className="text">

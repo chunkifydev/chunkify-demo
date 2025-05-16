@@ -20,7 +20,7 @@ export default function Monitor() {
         fetchJobs();
 
         // Then set up interval
-        const interval = setInterval(fetchJobs, 5000);
+        const interval = setInterval(fetchJobs, 3000);
 
         // Cleanup
         return () => clearInterval(interval);
@@ -37,18 +37,8 @@ export default function Monitor() {
         );
     }
 
-    if (videos.length === 0) {
-        return (
-            <div className="flex-1 flex items-center justify-center mt-32">
-                <p className="text-sm text-gray-500">
-                    No videos in error or processing right now
-                </p>
-            </div>
-        );
-    }
-
     return (
-        <div className="container mx-auto py-10">
+        <div className="container mx-auto px-4 py-12 flex justify-center">
             <VideoTable videos={videos} />
         </div>
     );

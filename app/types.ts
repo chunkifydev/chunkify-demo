@@ -20,9 +20,7 @@ export type Images = {
     thumbnailsFor: string;
 };
 
-// Add this type for job info
 export type JobInfo = {
     status: string;
     progress?: number;
-    // add other fields you need
 };
