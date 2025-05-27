@@ -15,10 +15,53 @@ import {
     Upload,
     NotificationPayloadJobCompletedData,
     NotificationPayloadUploadCompletedData,
+    verifyNotificationSignature,
 } from 'chunkify';
 
 export async function POST(req: NextRequest) {
-    const body = await req.json();
+    // Get the signature from the header
+    const headers = req.headers;
+    const signature = headers.get('X-Chunkify-Signature');
+    console.log('signature', signature);
+
+    // Check if the signature is here
+    if (!signature) {
+        console.error('Missing X-Chunkify-Signature header');
+        return NextResponse.json(
+            { error: 'Missing X-Chunkify-Signature header' },
+            { status: 401 }
+        );
+    }
+
+    if (!process.env.CHUNKIFY_WEBHOOK_SECRET) {
+        console.error('Missing CHUNKIFY_WEBHOOK_SECRET');
+        return NextResponse.json(
+            { error: 'Server configuration error' },
+            { status: 500 }
+        );
+    }
+
+    // Get the raw body as text
+    const rawBody = await req.text();
+
+    // Verify the signature with the raw body
+    const verified = verifyNotificationSignature(
+        rawBody,
+        signature,
+        process.env.CHUNKIFY_WEBHOOK_SECRET
+    );
+
+    // If the signature is not verified, return a 401 error
+    if (!verified) {
+        console.error('Invalid X-Chunkify-Signature header');
+        return NextResponse.json(
+            { error: 'Invalid X-Chunkify-Signature header' },
+            { status: 401 }
+        );
+    }
+
+    // Parse the body of the request
+    const body = JSON.parse(rawBody);
 
     const event = body.event; // e.g., "upload.completed", "job.completed", "job.failed"
     console.log('Webhook event received:', event);
@@ -64,11 +107,10 @@ export async function POST(req: NextRequest) {
                             payload.upload.id
                         );
                         throw new Error(
-                            'Cannot create job.No source_id found for this upload'
+                            'Cannot create job. No source_id found for this upload'
                         );
                     }
                 }
-                //await removeFromUploadStore(upload);
             }
             break;
         }
@@ -78,9 +120,6 @@ export async function POST(req: NextRequest) {
                 await updateVideo(upload.metadata?.demo_id, {
                     status: 'error',
                 });
-            }
-            if (upload) {
-                //await removeFromUploadStore(upload);
             }
             break;
         }
