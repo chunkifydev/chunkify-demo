@@ -11,7 +11,7 @@ export default function Monitor() {
 
     useEffect(() => {
         const fetchJobs = async () => {
-            const videos = await allVideos(['waiting', 'processing', 'error']);
+            const videos = await allVideos(undefined, 'desc');
             setVideos(videos);
             setLoading(false);
         };

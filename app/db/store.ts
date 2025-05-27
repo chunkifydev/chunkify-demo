@@ -2,29 +2,42 @@
 
 import { videos } from './schema';
 import { Video } from '../types';
-import { eq, inArray, sql } from 'drizzle-orm';
+import { eq, inArray, sql, desc, asc } from 'drizzle-orm';
 import { File } from 'chunkify';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
 import Database from 'better-sqlite3';
 import * as schema from './schema';
 import path from 'path';
+import { VideoStatus } from '../types';
 
 // Just create the connection once
 const dbPath = path.join(process.cwd(), 'app', 'db', 'sqlite.db');
 const sqlite = new Database(dbPath);
 const db = drizzle(sqlite, { schema });
 
-export async function allVideos(statuses?: string[]): Promise<Video[]> {
+export async function allVideos(
+    statuses?: string[],
+    sort: 'asc' | 'desc' = 'desc'
+): Promise<Video[]> {
     const query = db.select().from(videos);
-    const result = statuses?.length
-        ? await query.where(inArray(videos.status, statuses)).all()
-        : await query.all();
+
+    // Add status filter if provided
+    const filteredQuery = statuses?.length
+        ? query.where(inArray(videos.status, statuses))
+        : query;
+
+    // Add sorting
+    const result = await filteredQuery
+        .orderBy(
+            sort === 'desc' ? desc(videos.created_at) : asc(videos.created_at)
+        )
+        .all();
 
     return result.map((video) => ({
         id: video.id,
         job_id: video.job_id ?? '',
         source_id: video.source_id ?? '',
-        status: video.status ?? '',
+        status: video.status as VideoStatus,
         title: video.title ?? '',
         created_at: video.created_at ?? '',
         thumbnail: video.thumbnail ?? '',
@@ -140,14 +153,14 @@ export async function getVideoById(id: string): Promise<Video | null> {
     const video = result[0];
     return {
         id: video.id,
-        job_id: video.job_id ?? null,
+        job_id: video.job_id,
         status: video.status,
-        title: video.title ?? null,
+        title: video.title,
         created_at: video.created_at,
-        thumbnail: video.thumbnail ?? null,
-        files: (video.files ?? null) as File[] | null,
-        sprite: video.sprite ?? null,
-        upload_id: video.upload_id ?? '',
-        source_id: video.source_id ?? null,
-    };
+        thumbnail: video.thumbnail,
+        files: video.files,
+        sprite: video.sprite,
+        upload_id: video.upload_id,
+        source_id: video.source_id,
+    } as Video;
 }
