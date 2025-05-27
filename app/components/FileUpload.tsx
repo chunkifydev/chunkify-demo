@@ -15,7 +15,6 @@ export default function FileUpload() {
     const router = useRouter();
     const [progress, setProgress] = useState(0);
     const [isUploading, setIsUploading] = useState(false);
-    const [isUploaded, setIsUploaded] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [open, setOpen] = useState(false);
     const [fileName, setFileName] = useState<string>('');
@@ -24,7 +23,6 @@ export default function FileUpload() {
     const [title, setTitle] = useState('');
 
     const onDrop = async (acceptedFiles: File[]) => {
-        setIsUploaded(false);
         setProgress(0);
         setIsUploading(true);
         setError(null);
@@ -67,12 +65,10 @@ export default function FileUpload() {
             });
 
             await insertVideo(upload.metadata?.demo_id, title);
-            setIsUploaded(true);
             setOpen(false);
             router.push('/monitor');
         } catch (err) {
             setError('Upload failed: ' + err);
-            setIsUploaded(false);
         } finally {
             setIsUploading(false);
         }
@@ -96,11 +92,20 @@ export default function FileUpload() {
                     Upload
                 </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="sm:max-w-[600px]">
                 <div className="flex flex-col gap-4">
+                    <div className="space-y-1.5">
+                        <h2 className="text-lg font-semibold">
+                            Upload a video
+                        </h2>
+                        <p className="text-sm text-muted-foreground">
+                            Upload a video to start transcoding it!
+                        </p>
+                    </div>
+                    <div className="h-px bg-border -mx-6" />
                     {!isUploading && (
                         <>
-                            <div className="grid w-1/2 max-w-sm items-center gap-1.5">
+                            <div className="grid w-fullmax-w-sm items-center gap-1.5">
                                 <Label htmlFor="title">Video Title</Label>
                                 <Input
                                     type="title"
@@ -111,16 +116,21 @@ export default function FileUpload() {
                             </div>
                             <div
                                 {...getRootProps()}
-                                className="border-2 border-dashed p-6 rounded-lg text-center cursor-pointer"
+                                className="p-6 rounded-lg text-center cursor-pointer"
                             >
                                 <input {...getInputProps()} />
-                                {isDragActive ? (
-                                    <p>Drop the files here ...</p>
-                                ) : (
-                                    <p>
-                                        Select a video file to start transcoding
+                                <div className="flex flex-col items-center gap-4">
+                                    <p className="text-sm text-muted-foreground">
+                                        Drag and drop your video here
                                     </p>
-                                )}
+                                    <Button
+                                        variant="outline"
+                                        className="gap-2 cursor-pointer"
+                                    >
+                                        <Upload className="h-4 w-4" />
+                                        Select video
+                                    </Button>
+                                </div>
                             </div>
                             {error && <p className="text-red-500">{error}</p>}
                         </>
