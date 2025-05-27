@@ -1,18 +1,43 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<p align="center">
+  <img src="https://chunkify.s3.us-east-1.amazonaws.com/logos/chunkify.png" alt="Chunkify Logo" width="300"/>
+</p>
+
+# Chunkify Demo App
+
+A simple Next.js demo application showcasing video processing with Chunkify uing webhooks. The app uses webhooks to:
+
+-   Validate upload and source creation
+-   Trigger video processing jobs
+-   Track job completion and failures
+
+## Features
+
+-   Video upload and processing
+-   Thumbnail generation
+-   Video playback with thumbnails
 
 ## Getting Started
 
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. Clone the repository
+2. Install dependencies:
+    ```bash
+    npm install
+    ```
+3. Setup the needed environment variables in the`.env.local` file with:
+    ```
+    CHUNKIFY_PROJECT_KEY=your_project_key
+    CHUNKIFY_WEBHOOK_SECRET=your_webhook_secret
+    ```
+4. You will need the Chunkify CLI to start the webhook proxy:
+    - Install the CLI from [https://github.com/chunkify/cli](https://github.com/chunkify/cli)
+    - Run the proxy with:
+    ```bash
+    chunkify notifications proxy http://localhost:3000/api/webhook --webhook-secret your_project_webhook_secret
+    ```
+5. Run the development server:
+    ```bash
+    npm run dev
+    ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
