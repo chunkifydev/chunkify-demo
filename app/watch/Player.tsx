@@ -53,13 +53,13 @@ export default function Player({ video }: { video: Video }) {
                     </span>
                 </div>
                 <Button
-                    variant="secondary"
+                    variant="outline"
                     onClick={() => {
                         if (video.files?.[0]?.url) {
                             window.open(video.files[0].url, '_blank');
                         }
                     }}
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 cursor-pointer"
                 >
                     <Download className="h-4 w-4" />
                     Download

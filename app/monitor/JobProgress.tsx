@@ -46,7 +46,7 @@ export default function JobProgress({
         <div className="flex items-center gap-2">
             <Progress
                 value={jobInfo?.progress}
-                className="w-full [&>div>div]:bg-green-500"
+                className="w-full"
             />
             <span className="text-sm">
                 {Math.round(jobInfo?.progress || 0)}%
