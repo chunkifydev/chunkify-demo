@@ -17,7 +17,7 @@ export default function VideoCard({ job }: { job: Video }) {
         <Card
             className={`w-[420px] h-[275px] border-0 shadow-none ${
                 job.status === 'completed'
-                    ? 'cursor-pointer hover:shadow-lg transition-shadow'
+                    ? 'cursor-pointer'
                     : 'cursor-not-allowed opacity-80'
             }`}
             onClick={() => {
@@ -32,7 +32,11 @@ export default function VideoCard({ job }: { job: Video }) {
                         <img
                             src={job.thumbnail}
                             alt={job.title || 'Video thumbnail'}
-                            className="w-full rounded-lg"
+                            className={`w-full rounded-lg transition-all ${
+                                job.status === 'completed'
+                                    ? 'hover:ring-2 hover:ring-[hsl(var(--status-primary))]'
+                                    : ''
+                            }`}
                             style={{
                                 backgroundSize: 'cover',
                                 backgroundPosition: 'center',
