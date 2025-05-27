@@ -55,7 +55,7 @@ export default function VideoTable({ videos }: { videos: Video[] }) {
                                                     : video.status ===
                                                       'completed'
                                                     ? 'bg-[hsl(var(--status-primary))]'
-                                                    : 'bg-[hsl(var(--status-warning))]'
+                                                    : 'bg-[hsl(var(--status-warning))] animate-pulse'
                                             }`}
                                         />
                                     </div>
