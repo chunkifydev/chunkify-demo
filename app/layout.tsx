@@ -1,13 +1,13 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
-import Image from 'next/image';
+import { ThemeProvider } from './components/ThemeProvider';
 import Link from 'next/link';
 import FileUpload from './components/FileUpload';
 import './globals.css';
 import SearchInput from './components/SearchInput';
 import { Button } from '@/components/ui/button';
 import { Binoculars } from 'lucide-react';
-
+import { ModeToggle } from './components/ModeToggle';
 const geistSans = Geist({
     variable: '--font-geist-sans',
     subsets: ['latin'],
@@ -29,41 +29,54 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en">
+        <html
+            lang="en"
+            suppressHydrationWarning
+        >
             <body
                 className={`${geistSans.variable} ${geistMono.variable} antialiased`}
             >
-                <div className="min-h-screen flex flex-col">
-                    {/* Header with logo */}
-                    <header className="border-b">
-                        <div className="container mx-auto p-4 flex justify-between items-center">
-                            <Link href="/">
-                                <img
-                                    src="https://chunkify.s3.us-east-1.amazonaws.com/logos/chunkify.png"
-                                    alt="Chunkify Logo"
-                                    width={180}
-                                    height={70}
-                                />
-                            </Link>
-                            <SearchInput />
-                            <div className="flex items-center gap-6">
-                                <Link href="/monitor">
-                                    <Button
-                                        variant="outline"
-                                        className="flex items-center gap-2"
-                                    >
-                                        <Binoculars className="h-4 w-4" />
-                                        <span>Monitor</span>
-                                    </Button>
-                                </Link>
-                                <FileUpload />
+                <ThemeProvider
+                    attribute="class"
+                    defaultTheme="system"
+                    enableSystem
+                    disableTransitionOnChange
+                >
+                    <div className="min-h-screen flex flex-col">
+                        {/* Header with logo */}
+                        <header className="border-b">
+                            <div className="container mx-auto p-4 flex justify-between items-center">
+                                <div className="flex items-center gap-6">
+                                    <Link href="/">
+                                        <img
+                                            src="https://chunkify.s3.us-east-1.amazonaws.com/logos/chunkify.png"
+                                            alt="Chunkify Logo"
+                                            width={180}
+                                            height={70}
+                                        />
+                                    </Link>
+                                    <ModeToggle />
+                                </div>
+                                <SearchInput />
+                                <div className="flex items-center gap-6">
+                                    <Link href="/monitor">
+                                        <Button
+                                            variant="outline"
+                                            className="flex items-center gap-2"
+                                        >
+                                            <Binoculars className="h-4 w-4" />
+                                            <span>Monitor</span>
+                                        </Button>
+                                    </Link>
+                                    <FileUpload />
+                                </div>
                             </div>
-                        </div>
-                    </header>
+                        </header>
 
-                    {/* Main content */}
-                    <main className="flex-1">{children}</main>
-                </div>
+                        {/* Main content */}
+                        <main className="flex-1">{children}</main>
+                    </div>
+                </ThemeProvider>
             </body>
         </html>
     );
