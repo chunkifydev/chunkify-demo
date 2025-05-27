@@ -16,12 +16,12 @@ export default function VideoCard({ job }: { job: Video }) {
     return (
         <Card
             className={`w-[420px] h-[275px] ${
-                job.status === 'finished'
+                job.status === 'completed'
                     ? 'cursor-pointer hover:shadow-lg transition-shadow'
                     : 'cursor-not-allowed opacity-80'
             }`}
             onClick={() => {
-                if (job.status === 'finished') {
+                if (job.status === 'completed') {
                     router.push(`/watch?videoId=${job.id}`);
                 }
             }}

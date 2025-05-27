@@ -90,7 +90,7 @@ export async function POST(req: NextRequest) {
             if (payload && payload.job.id && payload.job.metadata?.demo_id) {
                 // update the job files and status since it's finished
                 await updateVideo(payload.job.metadata?.demo_id, {
-                    status: payload.job.status,
+                    status: 'completed',
                     files: payload.files,
                 });
             }
@@ -119,7 +119,7 @@ export async function POST(req: NextRequest) {
 
             if (payload && payload.job.id) {
                 await updateVideo(payload.job.metadata?.demo_id, {
-                    status: payload.job.status,
+                    status: 'error',
                 });
             }
             break;

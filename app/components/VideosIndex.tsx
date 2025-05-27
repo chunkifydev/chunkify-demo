@@ -21,7 +21,7 @@ export default function VideosIndex({ searchQuery }: { searchQuery: string }) {
             );
             setCountProcessing(processing.length);
             const finished = vids.filter((vid) =>
-                vid.status.includes('finished')
+                vid.status.includes('completed')
             );
             if (searchQuery) {
                 console.log('searchQuery', searchQuery);
