@@ -14,13 +14,13 @@ const badgeVariants = cva(
                 secondary:
                     'border-transparent bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90',
                 destructive:
-                    'border-transparent bg-[hsl(var(--status-destructive))]/80 text-[hsl(var(--status-destructive-foreground))] [a&]:hover:bg-[hsl(var(--status-destructive))/90] focus-visible:ring-[hsl(var(--status-destructive))/20] dark:bg-[hsl(var(--status-destructive))]/60 dark:focus-visible:ring-[hsl(var(--status-destructive))/40]',
+                    'border border-[hsl(var(--status-failed))] bg-[hsl(var(--status-destructive))]/80 text-[hsl(var(--status-destructive-foreground))] [a&]:hover:bg-[hsl(var(--status-destructive))/90] focus-visible:ring-[hsl(var(--status-destructive))/20] dark:bg-[hsl(var(--status-destructive))]/60 dark:focus-visible:ring-[hsl(var(--status-destructive))/40]',
                 outline:
                     'text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground',
                 success:
-                    'border-transparent bg-[hsl(var(--status-primary))]/80 text-[hsl(var(--status-primary-foreground))] [a&]:hover:bg-[hsl(var(--status-primary))/90] focus-visible:ring-[hsl(var(--status-primary))/20] dark:bg-[hsl(var(--status-primary))]/60 dark:focus-visible:ring-[hsl(var(--status-primary))/40]',
+                    'border border-[hsl(var(--status-primary))] bg-[hsl(var(--status-primary))]/80 text-[hsl(var(--status-primary-foreground))] [a&]:hover:bg-[hsl(var(--status-primary))/90] focus-visible:ring-[hsl(var(--status-primary))/20] dark:bg-[hsl(var(--status-primary))]/60 dark:focus-visible:ring-[hsl(var(--status-primary))/40]',
                 pending:
-                    'border-transparent bg-[hsl(var(--status-warning))]/80 text-[hsl(var(--status-warning-foreground))] [a&]:hover:bg-[hsl(var(--status-primary))/90] focus-visible:ring-[hsl(var(--status-primary))/20] dark:bg-[hsl(var(--status-warning))]/60 dark:focus-visible:ring-[hsl(var(--status-primary))/40]',
+                    'border border-[hsl(var(--status-warning))] bg-[hsl(var(--status-warning))]/80 text-[hsl(var(--status-warning-foreground))] [a&]:hover:bg-[hsl(var(--status-primary))/90] focus-visible:ring-[hsl(var(--status-primary))/20] dark:bg-[hsl(var(--status-warning))]/60 dark:focus-visible:ring-[hsl(var(--status-primary))/40]',
             },
         },
         defaultVariants: {

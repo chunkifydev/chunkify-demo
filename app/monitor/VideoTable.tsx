@@ -15,16 +15,17 @@ import { removeVideo } from '../db/store';
 import JobProgress from './JobProgress';
 export default function VideoTable({ videos }: { videos: Video[] }) {
     return (
-        <div className="w-full">
+        <div className="w-full border rounded-lg">
             <Table>
-                <TableHeader className="bg-muted">
+                <TableHeader className="bg-muted rounded-lg">
                     <TableRow>
+                        <TableHead className="w-[10px] rounded-tl-lg"></TableHead>
                         <TableHead className="w-[220px]">Title</TableHead>
                         <TableHead className="w-[150px] text-center">
                             Status
                         </TableHead>
                         <TableHead className="w-[150px]">Created</TableHead>
-                        <TableHead className="w-[50px] text-center">
+                        <TableHead className="w-[50px] text-center rounded-tr-lg">
                             Actions
                         </TableHead>
                     </TableRow>
@@ -45,6 +46,20 @@ export default function VideoTable({ videos }: { videos: Video[] }) {
                                 key={video.id}
                                 className="h-16"
                             >
+                                <TableCell className="text-center w-[10px]">
+                                    <div className="flex items-center justify-center h-full">
+                                        <div
+                                            className={`h-2 w-2 rounded-full ${
+                                                video.status === 'failed'
+                                                    ? 'bg-[hsl(var(--status-destructive))]'
+                                                    : video.status ===
+                                                      'completed'
+                                                    ? 'bg-[hsl(var(--status-primary))]'
+                                                    : 'bg-[hsl(var(--status-warning))]'
+                                            }`}
+                                        />
+                                    </div>
+                                </TableCell>
                                 <TableCell className="truncate max-w-[220px]">
                                     <div className="flex flex-col gap-2">
                                         <div className="truncate font-semibold">
