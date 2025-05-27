@@ -34,7 +34,7 @@ export default function VideoCard({ job }: { job: Video }) {
                             alt={job.title || 'Video thumbnail'}
                             className={`w-full rounded-lg transition-all ${
                                 job.status === 'completed'
-                                    ? 'hover:ring-2 hover:ring-[hsl(var(--status-primary))]'
+                                    ? 'hover:ring-2 hover:ring-primary'
                                     : ''
                             }`}
                             style={{

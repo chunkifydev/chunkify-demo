@@ -14,13 +14,13 @@ const badgeVariants = cva(
                 secondary:
                     'border-transparent bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90',
                 destructive:
-                    'border border-[hsl(var(--status-failed))] bg-[hsl(var(--status-destructive))]/80 text-[hsl(var(--status-destructive-foreground))] [a&]:hover:bg-[hsl(var(--status-destructive))/90] focus-visible:ring-[hsl(var(--status-destructive))/20] dark:bg-[hsl(var(--status-destructive))]/60 dark:focus-visible:ring-[hsl(var(--status-destructive))/40]',
+                    'border border-destructive bg-destructive/80 text-primary-foreground [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:text-destructive-foreground dark:focus-visible:ring-destructive/40',
                 outline:
                     'text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground',
                 success:
-                    'border border-[hsl(var(--status-primary))] bg-[hsl(var(--status-primary))]/80 text-[hsl(var(--status-primary-foreground))] [a&]:hover:bg-[hsl(var(--status-primary))/90] focus-visible:ring-[hsl(var(--status-primary))/20] dark:bg-[hsl(var(--status-primary))]/60 dark:focus-visible:ring-[hsl(var(--status-primary))/40]',
+                    'border border-primary bg-primary/80 text-primary-foreground [a&]:hover:bg-primary/90] focus-visible:ring-primary/20] dark:bg-primary/60 dark:focus-visible:ring-primary/40]',
                 pending:
-                    'border border-[hsl(var(--status-warning))] bg-[hsl(var(--status-warning))]/80 text-[hsl(var(--status-warning-foreground))] [a&]:hover:bg-[hsl(var(--status-primary))/90] focus-visible:ring-[hsl(var(--status-primary))/20] dark:bg-[hsl(var(--status-warning))]/60 dark:focus-visible:ring-[hsl(var(--status-primary))/40]',
+                    'border border-warning bg-warning/80 text-warning-foreground [a&]:hover:bg-warning/90 focus-visible:ring-warning/20 dark:bg-warning/60 dark:focus-visible:ring-warning/40',
             },
         },
         defaultVariants: {

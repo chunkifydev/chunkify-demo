@@ -51,11 +51,11 @@ export default function VideoTable({ videos }: { videos: Video[] }) {
                                         <div
                                             className={`h-2 w-2 rounded-full ${
                                                 video.status === 'failed'
-                                                    ? 'bg-[hsl(var(--status-destructive))]'
+                                                    ? 'bg-destructive'
                                                     : video.status ===
                                                       'completed'
-                                                    ? 'bg-[hsl(var(--status-primary))]'
-                                                    : 'bg-[hsl(var(--status-warning))] animate-pulse'
+                                                    ? 'bg-primary'
+                                                    : 'bg-warning animate-pulse'
                                             }`}
                                         />
                                     </div>
