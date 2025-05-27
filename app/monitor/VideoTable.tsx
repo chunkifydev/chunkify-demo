@@ -19,8 +19,10 @@ export default function VideoTable({ videos }: { videos: Video[] }) {
             <Table>
                 <TableHeader className="bg-muted">
                     <TableRow>
-                        <TableHead className="w-[200px]">Title</TableHead>
-                        <TableHead className="w-[250px]">Status</TableHead>
+                        <TableHead className="w-[220px]">Title</TableHead>
+                        <TableHead className="w-[150px] text-center">
+                            Status
+                        </TableHead>
                         <TableHead className="w-[150px]">Created</TableHead>
                         <TableHead className="w-[50px] text-center">
                             Actions
@@ -40,11 +42,22 @@ export default function VideoTable({ videos }: { videos: Video[] }) {
                     ) : (
                         videos.map((video) => (
                             <TableRow key={video.id}>
-                                <TableCell className="truncate max-w-[200px]">
-                                    {video.title}
+                                <TableCell className="truncate max-w-[220px]">
+                                    <div className="flex flex-col gap-2">
+                                        <div className="truncate">
+                                            {video.title}
+                                        </div>
+                                        {video.status === 'processing' &&
+                                            video.job_id && (
+                                                <JobProgress
+                                                    job_id={video.job_id}
+                                                    status={video.status}
+                                                />
+                                            )}
+                                    </div>
                                 </TableCell>
-                                <TableCell className="whitespace-nowrap">
-                                    <div className="flex items-center gap-4">
+                                <TableCell className="w-[150px] text-center">
+                                    <div className="flex items-center justify-center gap-2 min-h-[32px]">
                                         <Badge
                                             variant={
                                                 video.status === 'error'
@@ -63,15 +76,6 @@ export default function VideoTable({ videos }: { videos: Video[] }) {
                                                 <div className="inline-block animate-spin h-3 w-3 border-2 border-current rounded-full border-t-transparent" />
                                             )}
                                         </Badge>
-                                        {video.status === 'processing' &&
-                                            video.job_id && (
-                                                <div className="flex-1">
-                                                    <JobProgress
-                                                        job_id={video.job_id}
-                                                        status={video.status}
-                                                    />
-                                                </div>
-                                            )}
                                     </div>
                                 </TableCell>
                                 <TableCell className="whitespace-nowrap">
@@ -82,7 +86,7 @@ export default function VideoTable({ videos }: { videos: Video[] }) {
                                         <Button
                                             variant="ghost"
                                             size="icon"
-                                            className="h-8 w-8 text-destructive hover:text-destructive/90 cursor-pointer"
+                                            className="h-8 w-8 text-primary hover:text-destructive/90 cursor-pointer"
                                             onClick={() => {
                                                 removeVideo(video.id);
                                             }}
