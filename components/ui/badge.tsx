@@ -14,13 +14,13 @@ const badgeVariants = cva(
                 secondary:
                     'border-transparent bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90',
                 destructive:
-                    'border-transparent bg-destructive text-white [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60',
+                    'border-transparent bg-[hsl(var(--status-destructive))]/80 text-[hsl(var(--status-destructive-foreground))] [a&]:hover:bg-[hsl(var(--status-destructive))/90] focus-visible:ring-[hsl(var(--status-destructive))/20] dark:bg-[hsl(var(--status-destructive))]/60 dark:focus-visible:ring-[hsl(var(--status-destructive))/40]',
                 outline:
                     'text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground',
                 success:
-                    'border-transparent bg-green-600 text-white [a&]:hover:bg-green-600 focus-visible:ring-green-500/20 dark:focus-visible:ring-green-500/40',
+                    'border-transparent bg-[hsl(var(--status-primary))]/80 text-[hsl(var(--status-primary-foreground))] [a&]:hover:bg-[hsl(var(--status-primary))/90] focus-visible:ring-[hsl(var(--status-primary))/20] dark:bg-[hsl(var(--status-primary))]/60 dark:focus-visible:ring-[hsl(var(--status-primary))/40]',
                 pending:
-                    'border-transparent bg-yellow-500 text-white [a&]:hover:bg-yellow-600 focus-visible:ring-yellow-500/20 dark:focus-visible:ring-yellow-500/40',
+                    'border-transparent bg-[hsl(var(--status-warning))]/80 text-[hsl(var(--status-warning-foreground))] [a&]:hover:bg-[hsl(var(--status-primary))/90] focus-visible:ring-[hsl(var(--status-primary))/20] dark:bg-[hsl(var(--status-warning))]/60 dark:focus-visible:ring-[hsl(var(--status-primary))/40]',
             },
         },
         defaultVariants: {

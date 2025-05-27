@@ -41,10 +41,13 @@ export default function VideoTable({ videos }: { videos: Video[] }) {
                         </TableRow>
                     ) : (
                         videos.map((video) => (
-                            <TableRow key={video.id}>
+                            <TableRow
+                                key={video.id}
+                                className="h-16"
+                            >
                                 <TableCell className="truncate max-w-[220px]">
                                     <div className="flex flex-col gap-2">
-                                        <div className="truncate">
+                                        <div className="truncate font-semibold">
                                             {video.title}
                                         </div>
                                         {video.status === 'processing' &&
@@ -60,16 +63,19 @@ export default function VideoTable({ videos }: { videos: Video[] }) {
                                     <div className="flex items-center justify-center gap-2 min-h-[32px]">
                                         <Badge
                                             variant={
-                                                video.status === 'error'
+                                                video.status === 'failed'
                                                     ? 'destructive'
                                                     : video.status ===
                                                       'completed'
                                                     ? 'success'
                                                     : 'pending'
                                             }
-                                            className="w-32 flex items-center justify-center gap-2 flex-shrink-0"
+                                            className="flex items-center justify-center gap-2 flex-shrink-0 font-bold py-1 px-2"
                                         >
-                                            {video.status}
+                                            {video.status
+                                                .charAt(0)
+                                                .toUpperCase() +
+                                                video.status.slice(1)}
                                             {(video.status === 'waiting' ||
                                                 video.status ===
                                                     'processing') && (

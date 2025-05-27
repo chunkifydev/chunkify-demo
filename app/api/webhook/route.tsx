@@ -119,7 +119,7 @@ export async function POST(req: NextRequest) {
             const upload = body.data?.upload as Upload | undefined;
             if (upload && upload.metadata?.demo_id) {
                 await updateVideo(upload.metadata?.demo_id, {
-                    status: 'error',
+                    status: 'failed',
                 });
             }
             break;
@@ -159,7 +159,7 @@ export async function POST(req: NextRequest) {
 
             if (payload && payload.job.id) {
                 await updateVideo(payload.job.metadata?.demo_id, {
-                    status: 'error',
+                    status: 'failed',
                 });
             }
             break;

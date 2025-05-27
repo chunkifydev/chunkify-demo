@@ -1,6 +1,6 @@
 import { File } from 'chunkify';
 
-export type VideoStatus = 'waiting' | 'processing' | 'completed' | 'error';
+export type VideoStatus = 'waiting' | 'processing' | 'completed' | 'failed';
 
 export type Video = {
     id: string;
