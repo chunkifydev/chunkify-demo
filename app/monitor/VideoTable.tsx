@@ -12,18 +12,19 @@ import { timeAgo } from '../utils';
 import { Button } from '@/components/ui/button';
 import { Trash } from 'lucide-react';
 import { removeVideo } from '../db/store';
-import JobInfoTooltip from './JobInfoTooltip';
-
+import JobProgress from './JobProgress';
 export default function VideoTable({ videos }: { videos: Video[] }) {
     return (
         <div className="w-3/4">
             <Table>
                 <TableHeader className="bg-muted">
                     <TableRow>
-                        <TableHead className="w-[300px]">Title</TableHead>
-                        <TableHead className="w-[100px]">Status</TableHead>
+                        <TableHead className="w-[200px]">Title</TableHead>
+                        <TableHead className="w-[250px]">Status</TableHead>
                         <TableHead className="w-[150px]">Created</TableHead>
-                        <TableHead className="w-[50px]">Actions</TableHead>
+                        <TableHead className="w-[50px] text-center">
+                            Actions
+                        </TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -33,40 +34,55 @@ export default function VideoTable({ videos }: { videos: Video[] }) {
                                 colSpan={4}
                                 className="h-24 text-center text-muted-foreground"
                             >
-                                No videos in error or processing right now
+                                No videos processed or processing right now.
                             </TableCell>
                         </TableRow>
                     ) : (
                         videos.map((video) => (
                             <TableRow key={video.id}>
-                                <TableCell className="whitespace-nowrap truncate max-w-[300px]">
+                                <TableCell className="truncate max-w-[200px]">
                                     {video.title}
                                 </TableCell>
                                 <TableCell className="whitespace-nowrap">
-                                    <Badge
-                                        variant={
-                                            video.status === 'error'
-                                                ? 'destructive'
-                                                : 'pending'
-                                        }
-                                        className="w-28 flex items-center justify-center gap-2"
-                                    >
-                                        {video.status}
-                                        {video.status !== 'error' && (
-                                            <div className="inline-block animate-spin h-3 w-3 border-2 border-current rounded-full border-t-transparent" />
-                                        )}
-                                    </Badge>
+                                    <div className="flex items-center gap-4">
+                                        <Badge
+                                            variant={
+                                                video.status === 'error'
+                                                    ? 'destructive'
+                                                    : video.status ===
+                                                      'completed'
+                                                    ? 'success'
+                                                    : 'pending'
+                                            }
+                                            className="w-32 flex items-center justify-center gap-2 flex-shrink-0"
+                                        >
+                                            {video.status}
+                                            {(video.status === 'waiting' ||
+                                                video.status ===
+                                                    'processing') && (
+                                                <div className="inline-block animate-spin h-3 w-3 border-2 border-current rounded-full border-t-transparent" />
+                                            )}
+                                        </Badge>
+                                        {video.status === 'processing' &&
+                                            video.job_id && (
+                                                <div className="flex-1">
+                                                    <JobProgress
+                                                        job_id={video.job_id}
+                                                        status={video.status}
+                                                    />
+                                                </div>
+                                            )}
+                                    </div>
                                 </TableCell>
                                 <TableCell className="whitespace-nowrap">
                                     {timeAgo(video.created_at)}
                                 </TableCell>
-                                <TableCell className="whitespace-nowrap">
-                                    {(video.status === 'waiting' ||
-                                        video.status === 'error') && (
+                                <TableCell className="w-[50px] text-center">
+                                    {video.status !== 'processing' && (
                                         <Button
                                             variant="ghost"
                                             size="icon"
-                                            className="h-8 w-8 text-destructive hover:text-destructive/90"
+                                            className="h-8 w-8 text-destructive hover:text-destructive/90 cursor-pointer"
                                             onClick={() => {
                                                 removeVideo(video.id);
                                             }}
@@ -74,12 +90,6 @@ export default function VideoTable({ videos }: { videos: Video[] }) {
                                             <Trash className="h-4 w-4" />
                                         </Button>
                                     )}
-                                    {video.status === 'processing' &&
-                                        video.job_id && (
-                                            <JobInfoTooltip
-                                                job_id={video.job_id}
-                                            />
-                                        )}
                                 </TableCell>
                             </TableRow>
                         ))
