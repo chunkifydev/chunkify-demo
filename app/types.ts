@@ -13,6 +13,7 @@ export type Video = {
     files: File[] | null;
     thumbnail: string | null;
     sprite: string | null;
+    duration: number | null;
 };
 
 export type Images = {

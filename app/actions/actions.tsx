@@ -44,6 +44,7 @@ export async function createVideoJob(upload: Upload) {
         files: [],
         thumbnail: null,
         sprite: null,
+        duration: null,
         upload_id: upload.id,
         source_id: upload.source_id,
     };

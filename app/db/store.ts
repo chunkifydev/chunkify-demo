@@ -44,6 +44,7 @@ export async function allVideos(
         sprite: video.sprite ?? '',
         files: (video.files || []) as File[],
         upload_id: video.upload_id ?? '',
+        duration: video.duration ?? 0,
     }));
 }
 

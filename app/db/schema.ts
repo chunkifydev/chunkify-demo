@@ -1,4 +1,4 @@
-import { sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
 import { sql } from 'drizzle-orm';
 
 export const videos = sqliteTable('videos', {
@@ -14,5 +14,6 @@ export const videos = sqliteTable('videos', {
     files: text('files', { mode: 'json' }),
     thumbnail: text('thumbnail'),
     sprite: text('sprite'),
+    duration: integer('duration'),
     metadata: text('metadata', { mode: 'json' }),
 });

@@ -1,7 +1,7 @@
 import { Video } from '../types';
-import { Badge } from '@/components/ui/badge';
+import { Clock } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-
+import { formatDuration } from '../utils';
 import {
     Card,
     CardContent,
@@ -15,7 +15,7 @@ export default function VideoCard({ job }: { job: Video }) {
     const router = useRouter();
     return (
         <Card
-            className={`w-[420px] h-[275px] ${
+            className={`w-[420px] h-[275px] border-0 shadow-none ${
                 job.status === 'completed'
                     ? 'cursor-pointer hover:shadow-lg transition-shadow'
                     : 'cursor-not-allowed opacity-80'
@@ -26,19 +26,27 @@ export default function VideoCard({ job }: { job: Video }) {
                 }
             }}
         >
-            <CardContent>
+            <CardContent className="relative">
                 {job.thumbnail ? (
-                    <img
-                        src={job.thumbnail}
-                        alt={job.title || 'Video thumbnail'}
-                        className="w-full rounded-lg"
-                        style={{
-                            backgroundSize: 'cover',
-                            backgroundPosition: 'center',
-                            aspectRatio: '16/9',
-                            objectFit: 'cover',
-                        }}
-                    />
+                    <>
+                        <img
+                            src={job.thumbnail}
+                            alt={job.title || 'Video thumbnail'}
+                            className="w-full rounded-lg"
+                            style={{
+                                backgroundSize: 'cover',
+                                backgroundPosition: 'center',
+                                aspectRatio: '16/9',
+                                objectFit: 'cover',
+                            }}
+                        />
+                        {job.duration && (
+                            <div className="absolute bottom-2 right-4 bg-black/30 text-white px-1.5 py-0.5 rounded text-xs flex items-center gap-1">
+                                <Clock className="h-3 w-3" />
+                                {formatDuration(job.duration)}
+                            </div>
+                        )}
+                    </>
                 ) : (
                     <div className="w-full aspect-video bg-black rounded-lg flex items-center justify-center text-white">
                         Thumbnail not available
@@ -46,7 +54,7 @@ export default function VideoCard({ job }: { job: Video }) {
                 )}
             </CardContent>
             <CardFooter className="flex justify-between">
-                <span className="font-medium truncate max-w-[200px]">
+                <span className="font-bold truncate max-w-[200px]">
                     {job.title}
                 </span>
                 <span className="text-sm text-muted-foreground">

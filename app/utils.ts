@@ -22,3 +22,16 @@ export function timeAgo(date: string) {
     const diffInDays = Math.floor(diffInHours / 24);
     return `${diffInDays} day${diffInDays > 1 ? 's' : ''} ago`;
 }
+
+export function formatDuration(seconds: number): string {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+
+    if (hours > 0) {
+        return `${hours}:${minutes
+            .toString()
+            .padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+    }
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+}

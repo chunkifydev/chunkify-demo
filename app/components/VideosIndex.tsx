@@ -9,22 +9,16 @@ import { Button } from '@/components/ui/button';
 import { ArrowUpDown } from 'lucide-react';
 export default function VideosIndex({ searchQuery }: { searchQuery: string }) {
     const [videos, setVideos] = useState<Video[]>([]);
-    const [countProcessing, setCountProcessing] = useState(0);
     const [loading, setLoading] = useState(true);
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
     useEffect(() => {
         const fetchJobs = async () => {
             const vids = await allVideos([]);
-            const processing = vids.filter((vid) =>
-                ['waiting', 'processing'].includes(vid.status)
-            );
-            setCountProcessing(processing.length);
             const finished = vids.filter((vid) =>
                 vid.status.includes('completed')
             );
             if (searchQuery) {
-                console.log('searchQuery', searchQuery);
                 const filteredVideos = finished.filter((vid) =>
                     vid.title?.toLowerCase().includes(searchQuery.toLowerCase())
                 );

@@ -15,7 +15,7 @@ import { removeVideo } from '../db/store';
 import JobProgress from './JobProgress';
 export default function VideoTable({ videos }: { videos: Video[] }) {
     return (
-        <div className="w-3/4">
+        <div className="w-full">
             <Table>
                 <TableHeader className="bg-muted">
                     <TableRow>

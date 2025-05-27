@@ -1,5 +1,5 @@
 @import 'tailwindcss';
-@import "tw-animate-css";
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -83,6 +83,16 @@
     --sidebar-accent-foreground: oklch(0.205 0 0);
     --sidebar-border: oklch(0.922 0 0);
     --sidebar-ring: oklch(0.708 0 0);
+
+    --status-primary: 142 76% 36%;
+    --status-primary-foreground: 0 0% 98%;
+    --status-destructive: 0 84.2% 60.2%;
+    --status-destructive-foreground: 0 0% 98%;
+    --status-secondary: 0 0% 96.08%;
+    --status-secondary-foreground: 240 5.9% 10%;
+    --status-warning: 45.4 93.39% 47.45%;
+    --status-warning-foreground: 0 0% 100%;
+    --status-muted-foreground: 240 3.8% 46.1%;
 }
 
 .dark {
@@ -117,13 +127,42 @@
     --sidebar-accent-foreground: oklch(0.985 0 0);
     --sidebar-border: oklch(1 0 0 / 10%);
     --sidebar-ring: oklch(0.556 0 0);
+
+    --status-primary: 142 76% 36%;
+    --status-primary-foreground: 141.88 88.37% 91.93%;
+    --status-destructive: 0 62.8% 30.6%;
+    --status-destructive-foreground: 0 100% 90.54%;
+    --status-secondary: 0 0% 15.11%;
+    --status-secondary-foreground: 0 0% 98%;
+    --status-warning: 45.4 93.39% 47.45%;
+    --status-warning-foreground: 45.39 100% 91.52%;
+    --status-muted-foreground: 240 5% 64.9%;
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
+    * {
+        @apply border-border outline-ring/50;
     }
-  body {
-    @apply bg-background text-foreground;
+    body {
+        @apply bg-background text-foreground;
     }
+}
+
+:root {
+}
+
+.dark {
+    --status-primary: 142 76% 36%;
+    --status-primary-foreground: 141.88 88.37% 91.93%;
+
+    --status-destructive: 0 62.8% 30.6%;
+    --status-destructive-foreground: 0 100% 90.54%;
+
+    --status-secondary: 0 0% 15.11%;
+    --status-secondary-foreground: 0 0% 98%;
+
+    --status-warning: 45.4 93.39% 47.45%;
+    --status-warning-foreground: 45.39 100% 91.52%;
+
+    --status-muted-foreground: 240 5% 64.9%;
 }
