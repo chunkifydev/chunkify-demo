@@ -1,50 +1,19 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import VideoCard from './VideoCard';
-import { Video } from '../types';
-import { allVideos } from '../db/store';
+import { useSort } from '../hooks/useSort';
 import FileUpload from './FileUpload';
 import { Button } from '@/components/ui/button';
-
+import { useVideos } from '../hooks/useVideos';
 import { ArrowUpDown } from 'lucide-react';
 export default function VideosIndex({ searchQuery }: { searchQuery: string }) {
-    const [videos, setVideos] = useState<Video[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
-
-    useEffect(() => {
-        const fetchJobs = async () => {
-            const vids = await allVideos([]);
-            const finished = vids.filter((vid) =>
-                vid.status.includes('completed')
-            );
-            if (searchQuery) {
-                const filteredVideos = finished.filter((vid) =>
-                    vid.title?.toLowerCase().includes(searchQuery.toLowerCase())
-                );
-                setVideos(filteredVideos);
-            } else {
-                setVideos(finished);
-            }
-
-            setLoading(false);
-        };
-
-        // Fetch immediately
-        fetchJobs();
-
-        // Then set up interval
-        const interval = setInterval(fetchJobs, 2000);
-
-        // Cleanup
-        return () => clearInterval(interval);
-    }, [searchQuery]);
-
-    const sortedVideos = [...videos].sort((a, b) => {
-        const dateA = new Date(a.created_at).getTime();
-        const dateB = new Date(b.created_at).getTime();
-        return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+    const { videos, loading } = useVideos({
+        filterStatus: ['completed'],
+        searchQuery,
+        pollInterval: 2000,
     });
+
+    const { sortedVideos, sortOrder, toggleSort } = useSort(videos);
 
     if (loading) {
         return (
@@ -67,11 +36,7 @@ export default function VideosIndex({ searchQuery }: { searchQuery: string }) {
                             <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() =>
-                                    setSortOrder(
-                                        sortOrder === 'asc' ? 'desc' : 'asc'
-                                    )
-                                }
+                                onClick={toggleSort}
                                 className="flex items-center gap-2"
                             >
                                 <ArrowUpDown className="h-4 w-4" />

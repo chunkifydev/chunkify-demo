@@ -1,39 +1,17 @@
 'use client';
 
-import { Video } from '@/app/types';
-import { useState, useEffect } from 'react';
-import { allVideos } from '@/app/db/store';
+import { useState } from 'react';
 import VideoTable from './VideoTable';
 import { Button } from '@/components/ui/button';
 import { ArrowUpDown } from 'lucide-react';
-
+import { useVideos } from '../hooks/useVideos';
+import { useSort } from '../hooks/useSort';
 export default function Monitor() {
-    const [videos, setVideos] = useState<Video[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
-
-    useEffect(() => {
-        const fetchJobs = async () => {
-            const videos = await allVideos(undefined, 'desc');
-            setVideos(videos);
-            setLoading(false);
-        };
-
-        // Fetch immediately
-        fetchJobs();
-
-        // Then set up interval
-        const interval = setInterval(fetchJobs, 3000);
-
-        // Cleanup
-        return () => clearInterval(interval);
-    }, []);
-
-    const sortedVideos = [...videos].sort((a, b) => {
-        const dateA = new Date(a.created_at).getTime();
-        const dateB = new Date(b.created_at).getTime();
-        return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+    const { videos, loading } = useVideos({
+        pollInterval: 2000,
     });
+
+    const { sortedVideos, sortOrder, toggleSort } = useSort(videos);
 
     if (loading) {
         return (
@@ -54,9 +32,7 @@ export default function Monitor() {
                 <Button
                     variant="outline"
                     size="sm"
-                    onClick={() =>
-                        setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')
-                    }
+                    onClick={toggleSort}
                     className="flex items-center gap-2 mb-4"
                 >
                     <ArrowUpDown className="h-4 w-4" />

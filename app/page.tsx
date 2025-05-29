@@ -1,12 +1,11 @@
-import Image from 'next/image';
 import VideosIndex from './components/VideosIndex';
-import FileUpload from './components/FileUpload';
 
 export default async function Home({
     searchParams,
 }: {
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
+    console.log('Page rendering, searchParams:', searchParams);
     const params = await searchParams;
     const searchQuery = (params.t as string) || '';
 
