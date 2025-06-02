@@ -19,10 +19,13 @@ A simple Next.js demo application showcasing video processing with Chunkify uing
 ## Getting Started
 
 1. Clone the repository
+
 2. Install dependencies:
+
     ```bash
     npm install
     ```
+
 3. Setup the needed environment variables in the`.env.local` file with:
 
     ```
@@ -30,20 +33,17 @@ A simple Next.js demo application showcasing video processing with Chunkify uing
     CHUNKIFY_WEBHOOK_SECRET=your_webhook_secret
     ```
 
-4. Initialize the database (from the project root directory):
+4. You will need the Chunkify CLI to start the webhook proxy:
 
-    ```bash
-    npx drizzle-kit push
-    ```
-
-5. You will need the Chunkify CLI to start the webhook proxy:
     - Install the CLI from [https://github.com/chunkify/cli](https://github.com/chunkify/cli)
     - Read the instructions to setup a webhook for your project
     - Run the proxy with:
+
     ```bash
     chunkify notifications proxy http://localhost:3000/api/webhook --webhook-secret your_project_webhook_secret
     ```
-6. Run the development server:
+
+5. Run the development server:
     ```bash
     npm run dev
     ```
