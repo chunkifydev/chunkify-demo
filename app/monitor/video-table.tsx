@@ -12,7 +12,7 @@ import { timeAgo } from '../utils';
 import { Button } from '@/components/ui/button';
 import { Trash } from 'lucide-react';
 import { removeVideo } from '../db/store';
-import JobProgress from './JobProgress';
+import JobProgress from './job-progress';
 export default function VideoTable({ videos }: { videos: Video[] }) {
     return (
         <div className="w-full border rounded-lg">

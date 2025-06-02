@@ -17,10 +17,13 @@ export function useVideos({
 }: UseVideosOptions = {}) {
     const [videos, setVideos] = useState<Video[]>([]);
     const [loading, setLoading] = useState(true);
+    const [totalVideosCount, setTotalVideosCount] = useState(0);
 
     useEffect(() => {
         const fetchVideos = async () => {
             const vids = await allVideos([]);
+            // total count
+            setTotalVideosCount(vids.length);
 
             let filteredVideos = vids;
 
@@ -51,5 +54,5 @@ export function useVideos({
         return () => clearInterval(interval);
     }, [searchQuery]);
 
-    return { videos, loading };
+    return { videos, loading, totalVideosCount };
 }

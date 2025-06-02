@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import { ModeToggle } from './ModeToggle';
-import SearchInput from './SearchInput';
-import Monitor from './MonitorButton';
+import { ModeToggle } from './mode-toggle';
+import SearchInput from './search-input';
+import Monitor from './monitor-button';
 import FileUpload from './file-upload';
 
 export default function NavBar() {

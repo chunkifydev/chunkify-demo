@@ -1,4 +1,4 @@
-import VideosIndex from './components/VideosIndex';
+import VideosIndex from './components/videos';
 
 export default async function Home({
     searchParams,
