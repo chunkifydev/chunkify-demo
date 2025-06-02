@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { useVideos } from '../hooks/use-videos';
 import { ArrowUpDown } from 'lucide-react';
 export default function VideosIndex({ searchQuery }: { searchQuery: string }) {
-    const { videos, loading } = useVideos({
+    const { videos, loading, totalVideosCount } = useVideos({
         filterStatus: ['completed'],
         searchQuery,
         pollInterval: 2000,
@@ -28,30 +28,39 @@ export default function VideosIndex({ searchQuery }: { searchQuery: string }) {
 
     return (
         <div>
-            {videos.length > 0 ? (
+            {totalVideosCount > 0 ? (
                 <>
                     <div className="w-full mb-4 flex justify-end"></div>
-                    <div className="grid grid-cols-3 gap-4">
-                        <div className="col-span-3">
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={toggleSort}
-                                className="flex items-center gap-2"
-                            >
-                                <ArrowUpDown className="h-4 w-4" />
-                                {sortOrder === 'asc'
-                                    ? 'Oldest first'
-                                    : 'Latest first'}
-                            </Button>
+                    {videos.length > 0 ? (
+                        <div className="grid grid-cols-3 gap-4">
+                            <div className="col-span-3">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={toggleSort}
+                                    className="flex items-center gap-2"
+                                >
+                                    <ArrowUpDown className="h-4 w-4" />
+                                    {sortOrder === 'asc'
+                                        ? 'Oldest first'
+                                        : 'Latest first'}
+                                </Button>
+                            </div>
+                            {sortedVideos.map((job) => (
+                                <VideoCard
+                                    key={job.id}
+                                    job={job}
+                                />
+                            ))}
                         </div>
-                        {sortedVideos.map((job) => (
-                            <VideoCard
-                                key={job.id}
-                                job={job}
-                            />
-                        ))}
-                    </div>
+                    ) : (
+                        <div className="flex items-center justify-center mt-16">
+                            <p className="text">
+                                No video found with this name. Please try
+                                another one.
+                            </p>
+                        </div>
+                    )}
                 </>
             ) : (
                 <div className="flex flex-col gap-4 items-center justify-center mt-16">
@@ -64,7 +73,6 @@ export default function VideosIndex({ searchQuery }: { searchQuery: string }) {
                         notifications proxy from the chunkify CLI. The url to
                         use is <code>http://localhost:3000/api/webhook</code>
                     </p>
-
                     <FileUpload />
                 </div>
             )}
