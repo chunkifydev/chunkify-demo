@@ -141,14 +141,14 @@ export default function FileUpload() {
                                 <p className="text-sm text-gray-500">
                                     Uploading {fileName}
                                 </p>
-                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-green-500" />
-                                <p className="text-green-500 font-medium">
+                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary" />
+                                <p className="font-medium">
                                     {progress.toFixed(0)}%
                                 </p>
                             </div>
                             <Progress
                                 value={progress}
-                                className="w-[70%] [&>div]:bg-green-500"
+                                className="w-[70%]"
                             />
                         </div>
                     )}
