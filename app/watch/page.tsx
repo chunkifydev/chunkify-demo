@@ -1,5 +1,5 @@
 import { getVideoById } from '../db/store';
-import Player from './Player';
+import Player from './player';
 
 export default async function WatchPage({
     searchParams,

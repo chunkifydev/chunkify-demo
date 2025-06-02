@@ -1,11 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import VideoTable from './VideoTable';
+import VideoTable from './video-table';
 import { Button } from '@/components/ui/button';
 import { ArrowUpDown } from 'lucide-react';
-import { useVideos } from '../hooks/useVideos';
-import { useSort } from '../hooks/useSort';
+import { useVideos } from '../hooks/use-videos';
+import { useSort } from '../hooks/use-sort';
 export default function Monitor() {
     const { videos, loading } = useVideos({
         pollInterval: 2000,

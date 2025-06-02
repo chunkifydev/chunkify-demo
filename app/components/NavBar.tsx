@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { ModeToggle } from './ModeToggle';
 import SearchInput from './SearchInput';
 import Monitor from './MonitorButton';
-import FileUpload from './FileUpload';
+import FileUpload from './file-upload';
 
 export default function NavBar() {
     return (

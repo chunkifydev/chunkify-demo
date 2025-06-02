@@ -1,10 +1,10 @@
 'use client';
 import { useState } from 'react';
-import VideoCard from './VideoCard';
-import { useSort } from '../hooks/useSort';
-import FileUpload from './FileUpload';
+import VideoCard from './video-card';
+import { useSort } from '../hooks/use-sort';
+import FileUpload from './file-upload';
 import { Button } from '@/components/ui/button';
-import { useVideos } from '../hooks/useVideos';
+import { useVideos } from '../hooks/use-videos';
 import { ArrowUpDown } from 'lucide-react';
 export default function VideosIndex({ searchQuery }: { searchQuery: string }) {
     const { videos, loading } = useVideos({
