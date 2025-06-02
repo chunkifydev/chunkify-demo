@@ -64,10 +64,12 @@ export default function VideoTable({ videos }: { videos: Video[] }) {
                                         </div>
                                         {video.status === 'processing' &&
                                             video.job_id && (
-                                                <JobProgress
-                                                    job_id={video.job_id}
-                                                    status={video.status}
-                                                />
+                                                <div className="px-2">
+                                                    <JobProgress
+                                                        job_id={video.job_id}
+                                                        status={video.status}
+                                                    />
+                                                </div>
                                             )}
                                     </div>
                                 </TableCell>
