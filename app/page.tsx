@@ -5,7 +5,6 @@ export default async function Home({
 }: {
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-    console.log('Page rendering, searchParams:', searchParams);
     const params = await searchParams;
     const searchQuery = (params.t as string) || '';
 

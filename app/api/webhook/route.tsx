@@ -60,6 +60,8 @@ export async function POST(req: NextRequest) {
         );
     }
 
+    console.log('Webhook received, signature OK');
+
     // Parse the body of the request
     const body = JSON.parse(rawBody);
 
@@ -101,6 +103,9 @@ export async function POST(req: NextRequest) {
                             );
                         } catch (error) {
                             console.error('Error creating jobs:', error);
+                            await updateVideo(payload.upload.metadata?.demo_id, {
+                                status: 'failed',
+                            });
                         }
                     } else {
                         console.log(
