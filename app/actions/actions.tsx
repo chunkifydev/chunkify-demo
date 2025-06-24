@@ -28,7 +28,7 @@ export async function createVideoJob(upload: Upload) {
     const params: JobCreateParams = {
         source_id: upload.source_id,
         format: {
-            name: 'mp4/x264',
+            name: 'mp4/h264',
             config: {},
         },
         ...(upload.metadata && { metadata: upload.metadata }),
@@ -53,7 +53,6 @@ export async function createVideoJob(upload: Upload) {
 }
 
 export async function createImageJob(upload: Upload, duration: number) {
-    console.log('Creating image job with duration:', duration);
     const conf = {
         interval: Math.max(
             1,
@@ -83,7 +82,6 @@ export async function createImageJob(upload: Upload, duration: number) {
 }
 
 export async function createSpriteJob(upload: Upload, duration: number) {
-    console.log('Creating image job with duration:', duration);
     const conf: FfmpegJpg = {
         interval: duration < 10 ? 1 : 5, // 1 second for videos under 10s, 5 seconds for longer videos
         sprite: true,
