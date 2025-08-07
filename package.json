@@ -22,6 +22,7 @@
         "@radix-ui/react-tooltip": "^1.2.6",
         "better-sqlite3": "^11.10.0",
         "chunkify": "file:../chunkify-js",
+        "chunkify-uploader": "file:../chunkify-uploader",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "drizzle-orm": "^0.43.1",

@@ -13,8 +13,8 @@ import {
 } from '../../actions/actions';
 import {
     Upload,
-    NotificationPayloadJobCompletedData,
-    NotificationPayloadUploadCompletedData,
+    NotificationPayloadJobCompleted,
+    NotificationPayloadUploadCompleted,
     verifyNotificationSignature,
 } from 'chunkify';
 
@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
 
     switch (event) {
         case 'upload.completed': {
-            const payload = body.data as NotificationPayloadUploadCompletedData;
+            const payload = body.data as NotificationPayloadUploadCompleted;
 
             console.log('Upload notification');
             if (payload) {
@@ -103,9 +103,12 @@ export async function POST(req: NextRequest) {
                             );
                         } catch (error) {
                             console.error('Error creating jobs:', error);
-                            await updateVideo(payload.upload.metadata?.demo_id, {
-                                status: 'failed',
-                            });
+                            await updateVideo(
+                                payload.upload.metadata?.demo_id,
+                                {
+                                    status: 'failed',
+                                }
+                            );
                         }
                     } else {
                         console.log(
@@ -130,7 +133,7 @@ export async function POST(req: NextRequest) {
             break;
         }
         case 'job.completed': {
-            const payload = body.data as NotificationPayloadJobCompletedData;
+            const payload = body.data as NotificationPayloadJobCompleted;
 
             if (payload && payload.job.id && payload.job.metadata?.demo_id) {
                 // update the job files and status since it's finished
@@ -160,7 +163,7 @@ export async function POST(req: NextRequest) {
             break;
         }
         case 'job.failed': {
-            const payload = body.data as NotificationPayloadJobCompletedData;
+            const payload = body.data as NotificationPayloadJobCompleted;
 
             if (payload && payload.job.id) {
                 await updateVideo(payload.job.metadata?.demo_id, {
