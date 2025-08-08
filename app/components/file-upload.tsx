@@ -25,8 +25,8 @@ export default function FileUpload() {
     const handleEndpoint = async () => {
        const chunkifyUpload = await createUpload();
        setUpload(chunkifyUpload);
-      // return chunkifyUpload.upload_url;
-        return "http://localhost:8787/upload"
+       return chunkifyUpload.upload_url;
+      //  return "http://localhost:8787/apis/uploads"
     }
 
     const handleError = (event: any) => {
@@ -85,7 +85,7 @@ export default function FileUpload() {
                         className={styles.uploader}
                     >
                         <div slot="title">Drag and drop your file here</div>
-                        <div slot="upload-button">
+                        <div slot="upload-button" className="self-center">
                             <Button
                                 variant="outline"
                                 className="flex items-center gap-2 mt-4 cursor-pointer"
@@ -94,7 +94,8 @@ export default function FileUpload() {
                                 Select a video
                             </Button>
                         </div>
-                       
+                        <div slot="progress-bar" className={styles.myProgressBar}></div>
+                        <div slot="error-message" className="text-red-500 text-sm"></div>
                     </ChunkifyUploader>
                 </div>
             </DialogContent>

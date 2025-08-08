@@ -1,6 +1,22 @@
 .uploader {
-    background: rgb(244, 139, 139);
-    border: 2px dashed #ccc;
-    padding: 20px;
+    width: 100%;
+    height: 120px;
     text-align: center;
-  }
+    justify-content: center;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 0 auto;
+    background:white;
+}
+
+
+.myProgressBar {
+    width: 100%;
+    height: 8px;
+    background: linear-gradient(to right, 
+        #007bff var(--progress, 0%),     /* Blue fill up to progress */
+        #e9ecef var(--progress, 0%)      /* Gray background from progress */
+    );
+    border-radius: 4px;
+    transition: background 0.3s ease;
+}
