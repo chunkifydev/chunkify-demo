@@ -8,9 +8,17 @@ import { insertVideo } from '@/app/db/store';
 import { Upload } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
-import { ChunkifyUploader, ChunkifyUploaderFileSelect, ChunkifyUploaderProgressBar, ChunkifyUploaderProgressText, ChunkifyUploaderError, ChunkifyUploaderSuccess, ChunkifyUploaderHeading } from 'chunkify-uploader/react';
+//import { ChunkifyUploader, ChunkifyUploaderFileSelect, ChunkifyUploaderProgressBar, ChunkifyUploaderProgressText, ChunkifyUploaderError, ChunkifyUploaderSuccess, ChunkifyUploaderHeading } from 'chunkify-uploader/react';
 import { Upload as ChunkifyUpload } from 'chunkify';
 import styles from './file-upload.module.css';
+import dynamic from 'next/dynamic';
+const ChunkifyUploader = dynamic(() => import('chunkify-uploader/react').then(mod => ({ default: mod.ChunkifyUploader })), { ssr: false });
+const ChunkifyUploaderFileSelect = dynamic(() => import('chunkify-uploader/react').then(mod => ({ default: mod.ChunkifyUploaderFileSelect })), { ssr: false });
+const ChunkifyUploaderProgressBar = dynamic(() => import('chunkify-uploader/react').then(mod => ({ default: mod.ChunkifyUploaderProgressBar })), { ssr: false });
+const ChunkifyUploaderProgressText = dynamic(() => import('chunkify-uploader/react').then(mod => ({ default: mod.ChunkifyUploaderProgressText })), { ssr: false });
+const ChunkifyUploaderError = dynamic(() => import('chunkify-uploader/react').then(mod => ({ default: mod.ChunkifyUploaderError })), { ssr: false });
+const ChunkifyUploaderHeading = dynamic(() => import('chunkify-uploader/react').then(mod => ({ default: mod.ChunkifyUploaderHeading })), { ssr: false });
+
 
 export default function FileUpload() {
     const router = useRouter();
