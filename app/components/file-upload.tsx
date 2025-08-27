@@ -8,7 +8,7 @@ import { insertVideo } from '@/app/db/store';
 import { Upload } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
-import { ChunkifyUploader } from 'chunkify-uploader/react';
+import { ChunkifyUploader, ChunkifyUploaderFileSelect, ChunkifyUploaderProgressBar, ChunkifyUploaderProgressText, ChunkifyUploaderError, ChunkifyUploaderSuccess, ChunkifyUploaderHeading } from 'chunkify-uploader/react';
 import { Upload as ChunkifyUpload } from 'chunkify';
 import styles from './file-upload.module.css';
 
@@ -57,7 +57,7 @@ export default function FileUpload() {
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[600px]">
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-8">
                     <div className="space-y-1.5">
                         <h2 className="text-lg font-semibold">
                             Upload a video
@@ -83,19 +83,21 @@ export default function FileUpload() {
                         onUploadSuccess={handleSuccess}
                         onUploadError={handleError}
                         className={styles.uploader}
+                        drop
                     >
-                        <div slot="title">Drag and drop your file here</div>
-                        <div slot="upload-button" className="self-center">
+                        <ChunkifyUploaderHeading >Drag and drop your file here</ChunkifyUploaderHeading>
+                        <ChunkifyUploaderFileSelect className="self-center">
                             <Button
                                 variant="outline"
-                                className="flex items-center gap-2 mt-4 cursor-pointer"
+                                className="flex items-center gap-2 cursor-pointer"
                             >
                                 <Upload className="h-4 w-4" />
                                 Select a video
                             </Button>
-                        </div>
-                        <div slot="progress-bar" className={styles.myProgressBar}></div>
-                        <div slot="error-message" className="text-red-500 text-sm"></div>
+                        </ChunkifyUploaderFileSelect>
+                        <ChunkifyUploaderProgressText></ChunkifyUploaderProgressText>
+                        <ChunkifyUploaderProgressBar></ChunkifyUploaderProgressBar>
+                        <ChunkifyUploaderError className="text-red-500 text-sm"></ChunkifyUploaderError>
                     </ChunkifyUploader>
                 </div>
             </DialogContent>
