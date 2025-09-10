@@ -14,6 +14,7 @@ export default function NavBar() {
                         alt="Chunkify Logo"
                         width={180}
                         height={70}
+                        className="dark:invert dark:brightness-0 dark:contrast-200"
                     />
                 </Link>
                 <ModeToggle />
