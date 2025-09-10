@@ -85,7 +85,7 @@ export default function FileUpload() {
                             gap-[18px] 
                             rounded-xl 
                             mx-auto 
-                            bg-white
+                            bg-background
                             [&[dragover]]:border-blue-500
                             [&[dragover]]:bg-blue-500
                             [--progress-height:8px]
