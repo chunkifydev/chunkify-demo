@@ -7,18 +7,10 @@ import { Label } from '@/components/ui/label';
 import { insertVideo } from '@/app/db/store';
 import { Upload } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
-//import { ChunkifyUploader, ChunkifyUploaderFileSelect, ChunkifyUploaderProgressBar, ChunkifyUploaderProgressText, ChunkifyUploaderError, ChunkifyUploaderSuccess, ChunkifyUploaderHeading } from 'chunkify-uploader/react';
-import { Upload as ChunkifyUpload } from 'chunkify';
+import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogHeader, DialogDescription } from '@/components/ui/dialog';
+import { ChunkifyUploader, ChunkifyUploaderFileSelect, ChunkifyUploaderProgressBar, ChunkifyUploaderProgressText, ChunkifyUploaderError, ChunkifyUploaderSuccess, ChunkifyUploaderHeading } from 'chunkify-uploader/react';
+import { Upload as ChunkifyUpload, createClient } from 'chunkify';
 import styles from './file-upload.module.css';
-import dynamic from 'next/dynamic';
-const ChunkifyUploader = dynamic(() => import('chunkify-uploader/react').then(mod => ({ default: mod.ChunkifyUploader })), { ssr: false });
-const ChunkifyUploaderFileSelect = dynamic(() => import('chunkify-uploader/react').then(mod => ({ default: mod.ChunkifyUploaderFileSelect })), { ssr: false });
-const ChunkifyUploaderProgressBar = dynamic(() => import('chunkify-uploader/react').then(mod => ({ default: mod.ChunkifyUploaderProgressBar })), { ssr: false });
-const ChunkifyUploaderProgressText = dynamic(() => import('chunkify-uploader/react').then(mod => ({ default: mod.ChunkifyUploaderProgressText })), { ssr: false });
-const ChunkifyUploaderError = dynamic(() => import('chunkify-uploader/react').then(mod => ({ default: mod.ChunkifyUploaderError })), { ssr: false });
-const ChunkifyUploaderHeading = dynamic(() => import('chunkify-uploader/react').then(mod => ({ default: mod.ChunkifyUploaderHeading })), { ssr: false });
-
 
 export default function FileUpload() {
     const router = useRouter();
@@ -31,6 +23,7 @@ export default function FileUpload() {
     const [title, setTitle] = useState('');
 
     const handleEndpoint = async () => {
+        
        const chunkifyUpload = await createUpload();
        setUpload(chunkifyUpload);
        return chunkifyUpload.upload_url;
@@ -65,15 +58,13 @@ export default function FileUpload() {
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[600px]">
+                <DialogHeader>
+                    <DialogTitle>Upload a video</DialogTitle>
+                    <DialogDescription>
+                        Upload a video to start transcoding it!
+                    </DialogDescription>
+                </DialogHeader>
                 <div className="flex flex-col gap-8">
-                    <div className="space-y-1.5">
-                        <h2 className="text-lg font-semibold">
-                            Upload a video
-                        </h2>
-                        <p className="text-sm text-muted-foreground">
-                            Upload a video to start transcoding it!
-                        </p>
-                    </div>
                     <div className="h-px bg-border -mx-6" />
                     {!isUploading && (
                             <div className="grid w-fullmax-w-sm items-center gap-1.5">
@@ -86,11 +77,25 @@ export default function FileUpload() {
                                 />
                             </div>
                     )}
-                    <ChunkifyUploader
+                    <ChunkifyUploader 
+                        className="
+                            w-full 
+                            h-[120px] 
+                            text-center 
+                            gap-[18px] 
+                            rounded-xl 
+                            mx-auto 
+                            bg-white
+                            [&[dragover]]:border-blue-500
+                            [&[dragover]]:bg-blue-500
+                            [--progress-height:8px]
+                            [--progress-fill-color:#007bff]
+                            [--progress-background:#e9ecef]
+                            [--progress-border-radius:4px]
+                        "
                         endpoint={handleEndpoint}
                         onUploadSuccess={handleSuccess}
                         onUploadError={handleError}
-                        className={styles.uploader}
                         drop
                     >
                         <ChunkifyUploaderHeading >Drag and drop your file here</ChunkifyUploaderHeading>
@@ -105,7 +110,7 @@ export default function FileUpload() {
                         </ChunkifyUploaderFileSelect>
                         <ChunkifyUploaderProgressText></ChunkifyUploaderProgressText>
                         <ChunkifyUploaderProgressBar></ChunkifyUploaderProgressBar>
-                        <ChunkifyUploaderError className="text-red-500 text-sm"></ChunkifyUploaderError>
+                        <ChunkifyUploaderError className="text-red-500 text-sm">Upload error</ChunkifyUploaderError>
                     </ChunkifyUploader>
                 </div>
             </DialogContent>

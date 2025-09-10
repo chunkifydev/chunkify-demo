@@ -1,5 +1,4 @@
 'use server';
-
 import { client } from '../client';
 import { JobCreateParams, Upload, Jpg } from 'chunkify';
 import { Video, Images } from '../types';
@@ -99,3 +98,5 @@ export async function createSpriteJob(upload: Upload, duration: number) {
     };
     return spriteJob;
 }
+
+import { createClient } from 'chunkify';
