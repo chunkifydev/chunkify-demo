@@ -4,7 +4,12 @@ import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Download } from 'lucide-react';
 import { timeAgo } from '../utils';
-import MediaThemeSutro from 'player.style/sutro/react';
+import dynamic from 'next/dynamic';
+
+// Import MediaThemeSutro dynamically with no SSR
+const MediaThemeSutro = dynamic(() => import('player.style/sutro/react'), {
+    ssr: false,
+});
 
 export default function Player({ video }: { video: Video }) {
     return (
