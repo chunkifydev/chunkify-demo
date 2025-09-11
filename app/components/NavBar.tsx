@@ -7,7 +7,7 @@ import ChunkifyLogo from './logo';
 
 export default function NavBar() {
     return (
-        <div className="container mx-auto p-4 flex justify-between items-center">
+        <div className="px-12 py-4 flex justify-between items-center w-12/12">
             <div className="flex items-center gap-6">
                 <Link href="/">
                     <ChunkifyLogo />
