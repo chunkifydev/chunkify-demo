@@ -1,0 +1,11 @@
+
+export default function ChunkifyLogo() {
+    return (
+        <svg width="193" height="60" viewBox="0 0 193 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M38 22.5V20H35.5V17.5H33V10H35.5V7.5H38V5H48V7.5H50.5V10H45.5V7.5H40.5V10H38V17.5H40.5V20H45.5V17.5H50.5V20H48V22.5H38ZM53 22.5V5H58V12.5H65.5V5H70.5V22.5H65.5V15H58V22.5H53ZM75.5 22.5V20H73V5H78V20H85.5V5H90.5V20H88V22.5H75.5ZM93 22.5V5H98V7.5H100.5V10H103V12.5H105.5V5H110.5V22.5H105.5V17.5H103V15H100.5V12.5H98V22.5H93ZM113 22.5V5H118V12.5H120.5V10H123V7.5H125.5V5H130.5V7.5H128V10H125.5V12.5H123V15H125.5V17.5H128V20H130.5V22.5H123V20H120.5V17.5H118V22.5H113ZM135.5 22.5V20H140.5V7.5H135.5V5H150.5V7.5H145.5V20H150.5V22.5H135.5ZM153 22.5V5H170.5V7.5H158V12.5H168V15H158V22.5H153ZM180.5 22.5V15H178V12.5H175.5V5H180.5V12.5H185.5V5H190.5V12.5H188V15H185.5V22.5H180.5Z" className="fill-black dark:fill-white"/>
+            <rect width="10" height="10" transform="matrix(4.37114e-08 -1 -1 -4.37114e-08 10 20)" className="fill-black dark:fill-white"/>
+            <rect width="10" height="10" transform="matrix(-1 0 0 1 20 0)" className="fill-black dark:fill-white"/>
+            <rect width="10" height="10" transform="matrix(-1 0 0 1 20 20)" className="fill-black dark:fill-white"/>
+        </svg>
+    )
+}
