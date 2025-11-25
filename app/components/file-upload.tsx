@@ -9,8 +9,7 @@ import { Upload } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogHeader, DialogDescription } from '@/components/ui/dialog';
 import { ChunkifyUploader, ChunkifyUploaderFileSelect, ChunkifyUploaderProgressBar, ChunkifyUploaderProgressText, ChunkifyUploaderError, ChunkifyUploaderSuccess, ChunkifyUploaderHeading } from 'chunkify-uploader/react';
-import { Upload as ChunkifyUpload, createClient } from 'chunkify';
-import styles from './file-upload.module.css';
+import { Upload as ChunkifyUpload } from 'chunkify';
 
 export default function FileUpload() {
     const router = useRouter();
@@ -24,10 +23,10 @@ export default function FileUpload() {
 
     const handleEndpoint = async () => {
         
-       const chunkifyUpload = await createUpload();
+        const chunkifyUpload = await createUpload();
        setUpload(chunkifyUpload);
-       return chunkifyUpload.upload_url;
-      //  return "http://localhost:8787/apis/uploads"
+       return chunkifyUpload.upload_url; 
+    //return "http://localhost:8787/apis/uploads"
     }
 
     const handleError = (event: any) => {
@@ -86,10 +85,10 @@ export default function FileUpload() {
                             rounded-xl 
                             mx-auto 
                             bg-background
-                            [&[dragover]]:border-blue-500
-                            [&[dragover]]:bg-blue-500
+                            [&[dragover]]:border-gray-500
+                            [&[dragover]]:bg-gray-200
                             [--progress-height:8px]
-                            [--progress-fill-color:#007bff]
+                            [--progress-fill-color:#22c55e]
                             [--progress-background:#e9ecef]
                             [--progress-border-radius:4px]
                         "
