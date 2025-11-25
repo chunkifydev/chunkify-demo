@@ -86,10 +86,7 @@ export default function VideoTable({ videos }: { videos: Video[] }) {
                                             }
                                             className="flex items-center justify-center gap-2 flex-shrink-0 font-bold py-1 px-2"
                                         >
-                                            {video.status
-                                                .charAt(0)
-                                                .toUpperCase() +
-                                                video.status.slice(1)}
+                                            {video.status.charAt(0).toUpperCase() + video.status.slice(1)}
                                             {(video.status === 'waiting' ||
                                                 video.status ===
                                                     'processing') && (
