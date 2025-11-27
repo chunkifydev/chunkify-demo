@@ -29,16 +29,6 @@ export async function POST(req: NextRequest) {
          headers[key.toLowerCase()] = value; // ← Force en minuscules
      });
 
-    //
-    const webhookId = headers['webhook-id'];
-    const timestamp = headers['webhook-timestamp'];
-    const signature = headers['webhook-signature'];
-    const secret = client.webhookKey || '';
-
-    if (webhookId && timestamp && signature && secret) {
-        debugSignature(rawBody, webhookId, timestamp, signature, secret);
-    }
-
     // Unwrap the webhook will also verify the signature using the secret key
      let body: Chunkify.UnwrapWebhookEvent;
      try {
@@ -161,37 +151,4 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ ok: true });
-}
-
-function debugSignature(body: string, webhookId: string, timestampStr: string, receivedSig: string, secret: string) {
-    // Décoder le secret (enlever whsec_ si présent)
-    let secretKey = secret;
-    if (secretKey.startsWith('whsec_')) {
-        secretKey = secretKey.substring(6);
-    }
-    const secretBytes = Buffer.from(secretKey, 'base64');
-    
-    // Convertir le timestamp string en nombre (comme la lib le fait)
-    const timestampNumber = Math.floor(parseInt(timestampStr, 10));
-    
-    // Construire le message exact comme la lib
-    const message = `${webhookId}.${timestampNumber}.${body}`;
-    
-    // Calculer HMAC-SHA256 (comme la lib avec fast-sha256)
-    const hmac = crypto.createHmac('sha256', secretBytes);
-    hmac.update(message);
-    const calculatedSig = `v1,${hmac.digest('base64')}`;
-    
-    console.log('=== SIGNATURE DEBUG ===');
-    console.log('webhook-id:', webhookId);
-    console.log('webhook-timestamp (string):', timestampStr);
-    console.log('webhook-timestamp (number):', timestampNumber);
-    console.log('Body length:', body.length);
-    console.log('Message to sign (first 200):', message.substring(0, 200));
-    console.log('Message length:', message.length);
-    console.log('Secret (first 15):', secret.substring(0, 15));
-    console.log('Calculated signature:', calculatedSig);
-    console.log('Received signature:', receivedSig);
-    console.log('Match:', calculatedSig === receivedSig);
-    console.log('========================');
 }
