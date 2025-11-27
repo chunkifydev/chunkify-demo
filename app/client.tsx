@@ -1,6 +1,25 @@
-import { createClient } from 'chunkify';
 
-export const client = createClient({
-    teamToken: process.env.CHUNKIFY_TEAM_TOKEN || '',
-    projectToken: process.env.CHUNKIFY_PROJECT_TOKEN || '',
+import { Chunkify } from 'chunkify';
+
+const projectToken = process.env['CHUNKIFY_PROJECT_TOKEN'];
+const webhookSecret = process.env['CHUNKIFY_WEBHOOK_SECRET'];
+
+// Validation des tokens
+if (!projectToken) {
+    throw new Error(
+        'Missing authentication tokens. Please set CHUNKIFY_PROJECT_TOKEN in your .env.local file'
+    );
+}
+
+if (!webhookSecret) {
+    throw new Error(
+        'Missing webhook secret. Please set CHUNKIFY_WEBHOOK_SECRET in your .env.local file'
+    );
+}
+
+export const client = new Chunkify({
+    baseURL: 'http://localhost:8888/v1',
+    projectAccessToken: projectToken,
+    webhookKey: webhookSecret,
 });
+

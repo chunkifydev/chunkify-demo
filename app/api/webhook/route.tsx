@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import Chunkify from 'chunkify';
+import crypto from 'crypto';
 
 import {
     addThumbnail,
@@ -11,70 +13,51 @@ import {
     createImageJob,
     createSpriteJob,
 } from '../../actions/actions';
-import {
-    Upload,
-    NotificationPayloadJobCompleted,
-    NotificationPayloadUploadCompleted,
-    verifyNotificationSignature,
-} from 'chunkify';
+
+import { client } from '../../client';
+
 
 export async function POST(req: NextRequest) {
-    // Get the signature from the header
-    const headers = req.headers;
-    const signature = headers.get('X-Chunkify-Signature');
-    console.log('signature', signature);
 
-    // Check if the signature is here
-    if (!signature) {
-        console.error('Missing X-Chunkify-Signature header');
-        return NextResponse.json(
-            { error: 'Missing X-Chunkify-Signature header' },
-            { status: 401 }
-        );
+     // Get the raw body as text
+     const rawBody = await req.text();
+
+  
+     // Convert Next.js Headers to Record<string, string>
+     const headers: Record<string, string> = {};
+     req.headers.forEach((value, key) => {
+         headers[key.toLowerCase()] = value; // ← Force en minuscules
+     });
+
+    //
+    const webhookId = headers['webhook-id'];
+    const timestamp = headers['webhook-timestamp'];
+    const signature = headers['webhook-signature'];
+    const secret = client.webhookKey || '';
+
+    if (webhookId && timestamp && signature && secret) {
+        debugSignature(rawBody, webhookId, timestamp, signature, secret);
     }
 
-    if (!process.env.CHUNKIFY_WEBHOOK_SECRET) {
-        console.error('Missing CHUNKIFY_WEBHOOK_SECRET');
-        return NextResponse.json(
-            { error: 'Server configuration error' },
-            { status: 500 }
-        );
-    }
-
-    // Get the raw body as text
-    const rawBody = await req.text();
-
-    // Verify the signature with the raw body
-    const verified = verifyNotificationSignature(
-        rawBody,
-        signature,
-        process.env.CHUNKIFY_WEBHOOK_SECRET
-    );
-
-    // If the signature is not verified, return a 401 error
-    if (!verified) {
-        console.error('Invalid X-Chunkify-Signature header');
-        return NextResponse.json(
-            { error: 'Invalid X-Chunkify-Signature header' },
-            { status: 401 }
-        );
-    }
-
-    console.log('Webhook received, signature OK');
-
-    // Parse the body of the request
-    const body = JSON.parse(rawBody);
+    // Unwrap the webhook will also verify the signature using the secret key
+     let body: Chunkify.UnwrapWebhookEvent;
+     try {
+        body = client.webhooks.unwrap(rawBody, { headers });
+     } catch (error) {
+        console.error('Error unwrapping webhook:', error);
+        return NextResponse.json({ error: 'Failed to unwrap webhook' }, { status: 500 });
+     }
 
     const event = body.event; // e.g., "upload.completed", "job.completed", "job.failed"
     console.log('Webhook event received:', event);
 
     switch (event) {
         case 'upload.completed': {
-            const payload = body.data as NotificationPayloadUploadCompleted;
+            const payload = body.data as Chunkify.UnwrapWebhookEvent.NotificationPayloadUploadCompleted
 
             console.log('Upload notification');
             if (payload) {
-                if (await getVideoById(payload.upload.metadata?.demo_id)) {
+                if ( payload.upload.metadata?.demo_id && await getVideoById(payload.upload.metadata?.demo_id)) {
                     if (payload.upload.source_id) {
                         // Create jobs from the source
                         try {
@@ -124,16 +107,16 @@ export async function POST(req: NextRequest) {
             break;
         }
         case 'upload.failed': {
-            const upload = body.data?.upload as Upload | undefined;
-            if (upload && upload.metadata?.demo_id) {
-                await updateVideo(upload.metadata?.demo_id, {
+            const payload = body.data as Chunkify.UnwrapWebhookEvent.NotificationPayloadUploadFailed;
+            if (payload && payload.upload.metadata?.demo_id) {
+                await updateVideo(payload.upload.metadata.demo_id, {
                     status: 'failed',
                 });
             }
             break;
         }
         case 'job.completed': {
-            const payload = body.data as NotificationPayloadJobCompleted;
+            const payload = body.data as Chunkify.UnwrapWebhookEvent.NotificationPayloadJobCompleted;
 
             if (payload && payload.job.id && payload.job.metadata?.demo_id) {
                 // update the job files and status since it's finished
@@ -143,7 +126,7 @@ export async function POST(req: NextRequest) {
                 });
             }
             // If this an image job, add thumbnail or sprite to the associated video
-            if (payload.job.format.name === 'jpg') {
+            if (payload.job.format.id === 'jpg') {
                 console.log(
                     'Image job completed, adding thumbnail to video job'
                 );
@@ -163,9 +146,9 @@ export async function POST(req: NextRequest) {
             break;
         }
         case 'job.failed': {
-            const payload = body.data as NotificationPayloadJobCompleted;
+            const payload = body.data as Chunkify.UnwrapWebhookEvent.NotificationPayloadJobFailed;
 
-            if (payload && payload.job.id) {
+            if (payload && payload.job.id && payload.job.metadata?.demo_id) {
                 await updateVideo(payload.job.metadata?.demo_id, {
                     status: 'failed',
                 });
@@ -178,4 +161,37 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ ok: true });
+}
+
+function debugSignature(body: string, webhookId: string, timestampStr: string, receivedSig: string, secret: string) {
+    // Décoder le secret (enlever whsec_ si présent)
+    let secretKey = secret;
+    if (secretKey.startsWith('whsec_')) {
+        secretKey = secretKey.substring(6);
+    }
+    const secretBytes = Buffer.from(secretKey, 'base64');
+    
+    // Convertir le timestamp string en nombre (comme la lib le fait)
+    const timestampNumber = Math.floor(parseInt(timestampStr, 10));
+    
+    // Construire le message exact comme la lib
+    const message = `${webhookId}.${timestampNumber}.${body}`;
+    
+    // Calculer HMAC-SHA256 (comme la lib avec fast-sha256)
+    const hmac = crypto.createHmac('sha256', secretBytes);
+    hmac.update(message);
+    const calculatedSig = `v1,${hmac.digest('base64')}`;
+    
+    console.log('=== SIGNATURE DEBUG ===');
+    console.log('webhook-id:', webhookId);
+    console.log('webhook-timestamp (string):', timestampStr);
+    console.log('webhook-timestamp (number):', timestampNumber);
+    console.log('Body length:', body.length);
+    console.log('Message to sign (first 200):', message.substring(0, 200));
+    console.log('Message length:', message.length);
+    console.log('Secret (first 15):', secret.substring(0, 15));
+    console.log('Calculated signature:', calculatedSig);
+    console.log('Received signature:', receivedSig);
+    console.log('Match:', calculatedSig === receivedSig);
+    console.log('========================');
 }

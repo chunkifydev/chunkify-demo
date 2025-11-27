@@ -9,14 +9,14 @@ import { Upload } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogHeader, DialogDescription } from '@/components/ui/dialog';
 import { ChunkifyUploader, ChunkifyUploaderFileSelect, ChunkifyUploaderProgressBar, ChunkifyUploaderProgressText, ChunkifyUploaderError, ChunkifyUploaderSuccess, ChunkifyUploaderHeading } from 'chunkify-uploader/react';
-import { Upload as ChunkifyUpload } from 'chunkify';
 
+import type Chunkify from 'chunkify';
 export default function FileUpload() {
     const router = useRouter();
 
     const [isUploading, setIsUploading] = useState(false);
     const [open, setOpen] = useState(false);
-    const [upload, setUpload] = useState<ChunkifyUpload | null>(null);
+    const [upload, setUpload] = useState<Chunkify.Upload | null>(null);
 
     //For metadata
     const [title, setTitle] = useState('');
@@ -34,8 +34,8 @@ export default function FileUpload() {
     }
 
     const handleSuccess = async () => {
-        if (upload) {
-            await insertVideo(upload.metadata?.demo_id, title);
+        if (upload && upload.metadata?.demo_id) {
+            await insertVideo(upload.metadata.demo_id, title);
         }
         setIsUploading(false);
         setOpen(false);

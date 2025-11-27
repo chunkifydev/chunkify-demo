@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import {
     createUpload,
 } from '../../actions/actions';
-import { ChunkifyAPIError } from 'chunkify';
+import Chunkify from 'chunkify';
 
 export async function GET() {
     try {
@@ -10,7 +10,7 @@ export async function GET() {
 
         return NextResponse.json(upload);
     } catch (error) {
-        if (error instanceof ChunkifyAPIError) {
+        if (error instanceof Chunkify.APIError) {
             console.error(error);
             return NextResponse.json({ error: error.message });
         }
