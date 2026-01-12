@@ -8,7 +8,7 @@ import { insertVideo } from '@/app/db/store';
 import { Upload } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogHeader, DialogDescription } from '@/components/ui/dialog';
-import { ChunkifyUploader, ChunkifyUploaderFileSelect, ChunkifyUploaderProgressBar, ChunkifyUploaderProgressText, ChunkifyUploaderError, ChunkifyUploaderSuccess, ChunkifyUploaderHeading } from 'chunkify-uploader/react';
+import { ChunkifyUploader, ChunkifyUploaderFileSelect, ChunkifyUploaderProgressBar, ChunkifyUploaderProgressText, ChunkifyUploaderError, ChunkifyUploaderSuccess, ChunkifyUploaderHeading } from '@chunkify/uploader/react';
 
 import type Chunkify from 'chunkify';
 export default function FileUpload() {
@@ -22,11 +22,10 @@ export default function FileUpload() {
     const [title, setTitle] = useState('');
 
     const handleEndpoint = async () => {
-        
         const chunkifyUpload = await createUpload();
-       setUpload(chunkifyUpload);
+        setUpload(chunkifyUpload);
        return chunkifyUpload.upload_url; 
-    //return "http://localhost:8787/apis/uploads"
+       //return "http://localhost:8787/apis/uploads"
     }
 
     const handleError = (event: any) => {
