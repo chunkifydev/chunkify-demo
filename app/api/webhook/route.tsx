@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Chunkify from 'chunkify';
+import Chunkify from '@chunkify/chunkify';
 import crypto from 'crypto';
 
 import {

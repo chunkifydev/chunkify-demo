@@ -1,4 +1,6 @@
-import { File } from 'chunkify';
+import type Chunkify from '@chunkify/chunkify';
+
+export type File = Chunkify.APIFile;
 
 export type VideoStatus = 'waiting' | 'processing' | 'completed' | 'failed';
 

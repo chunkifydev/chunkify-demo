@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import {
     createUpload,
 } from '../../actions/actions';
-import Chunkify from 'chunkify';
+import Chunkify from '@chunkify/chunkify';
 
 export async function GET() {
     try {

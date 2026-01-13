@@ -3,12 +3,14 @@
 import { videos } from './schema';
 import { Video } from '../types';
 import { eq, inArray, sql, desc, asc } from 'drizzle-orm';
-import { File } from 'chunkify';
+import type Chunkify from '@chunkify/chunkify';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
 import Database from 'better-sqlite3';
 import * as schema from './schema';
 import path from 'path';
 import { VideoStatus } from '../types';
+
+type File = Chunkify.APIFile;
 
 // Just create the connection once
 const dbPath = path.join(process.cwd(), 'app', 'db', 'sqlite.db');

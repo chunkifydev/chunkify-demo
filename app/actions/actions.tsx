@@ -1,6 +1,6 @@
 'use server';
 import { client } from '../client';
-import type  Chunkify from 'chunkify';
+import  Chunkify from '@chunkify/chunkify';
 import { Video, Images } from '../types';
 import { generateDemoId } from '../db/store';
 

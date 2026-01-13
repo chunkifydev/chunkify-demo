@@ -1,5 +1,4 @@
-
-import { Chunkify } from 'chunkify';
+import { Chunkify } from '@chunkify/chunkify';
 
 const projectToken = process.env['CHUNKIFY_PROJECT_TOKEN'];
 const webhookSecret = process.env['CHUNKIFY_WEBHOOK_SECRET'];
