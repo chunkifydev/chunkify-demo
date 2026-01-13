@@ -28,6 +28,8 @@ A simple Next.js demo application showcasing video processing with Chunkify uing
 
 3. Setup the needed environment variables in the`.env.local` file with:
 
+   Copy the `.env.example` file to `.env.local` and fill in your Chunkify credentials:
+
     ```
     CHUNKIFY_PROJECT_KEY=your_project_key
     CHUNKIFY_WEBHOOK_SECRET=your_webhook_secret
