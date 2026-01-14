@@ -10,7 +10,7 @@ import * as schema from './schema';
 import path from 'path';
 import { VideoStatus } from '../types';
 
-type File = Chunkify.APIFile;
+type File = Chunkify.JobFile;
 
 // Just create the connection once
 const dbPath = path.join(process.cwd(), 'app', 'db', 'sqlite.db');

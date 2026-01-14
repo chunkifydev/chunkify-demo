@@ -14,7 +14,7 @@
         "db:push": "drizzle-kit push"
     },
     "dependencies": {
-        "@chunkify/chunkify": "^0.6.2",
+        "@chunkify/chunkify": "^0.6.3",
         "@chunkify/uploader": "^0.1.5",
         "@radix-ui/react-dialog": "^1.1.13",
         "@radix-ui/react-dropdown-menu": "^2.1.15",

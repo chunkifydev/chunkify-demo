@@ -1,6 +1,6 @@
 import type Chunkify from '@chunkify/chunkify';
 
-export type File = Chunkify.APIFile;
+export type File = Chunkify.JobFile;
 
 export type VideoStatus = 'waiting' | 'processing' | 'completed' | 'failed';
 
