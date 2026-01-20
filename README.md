@@ -37,7 +37,7 @@ A simple Next.js demo application showcasing video processing with Chunkify uing
 
 4. You will need the Chunkify CLI to start the webhook proxy:
 
-    - Install the CLI from [https://github.com/chunkify/cli](https://github.com/chunkify/cli)
+    - Install the CLI from [https://github.com/chunkifydev/cli](https://github.com/chunkifydev/cli)
     - Read the instructions to setup a webhook for your project
     - Run the proxy with:
 
