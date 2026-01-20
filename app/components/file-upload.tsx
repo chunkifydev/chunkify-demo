@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogHeader, DialogDescription } from '@/components/ui/dialog';
 import { ChunkifyUploader, ChunkifyUploaderFileSelect, ChunkifyUploaderProgressBar, ChunkifyUploaderProgressText, ChunkifyUploaderError, ChunkifyUploaderSuccess, ChunkifyUploaderHeading } from '@chunkify/uploader/react';
 
-import type Chunkify from 'chunkify';
+import Chunkify from '@chunkify/chunkify';
 export default function FileUpload() {
     const router = useRouter();
 
@@ -24,8 +24,7 @@ export default function FileUpload() {
     const handleEndpoint = async () => {
         const chunkifyUpload = await createUpload();
         setUpload(chunkifyUpload);
-       return chunkifyUpload.upload_url; 
-       //return "http://localhost:8787/apis/uploads"
+        return chunkifyUpload.upload_url; 
     }
 
     const handleError = (event: any) => {
